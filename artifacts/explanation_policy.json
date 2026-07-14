@@ -1,0 +1,63 @@
+{
+  "policy_version": "1.0.0",
+  "allowed_visible_dimensions": [
+    "estudiante",
+    "familia",
+    "hogar",
+    "socioeconomico"
+  ],
+  "allowed_visible_features": [
+    "estu_dedicacioninternet",
+    "estu_dedicacionlecturadiaria",
+    "estu_genero",
+    "estu_horassemanatrabaja",
+    "estu_tiporemuneracion",
+    "fami_comecarnepescadohuevo",
+    "fami_comecerealfrutoslegumbre",
+    "fami_comelechederivados",
+    "fami_cuartoshogar",
+    "fami_educacionmadre",
+    "fami_educacionpadre",
+    "fami_estratovivienda",
+    "fami_numlibros",
+    "fami_personashogar",
+    "fami_situacioneconomica",
+    "fami_tieneautomovil",
+    "fami_tienecomputador",
+    "fami_tieneconsolavideojuegos",
+    "fami_tienehornomicroogas",
+    "fami_tieneinternet",
+    "fami_tienelavadora",
+    "fami_tienemotocicleta",
+    "fami_tieneserviciotv",
+    "fami_trabajolabormadre",
+    "fami_trabajolaborpadre"
+  ],
+  "blocked_prefixes": [
+    "cole_",
+    "estu_cod_depto",
+    "estu_cod_mcpio",
+    "estu_depto",
+    "estu_mcpio",
+    "estu_pais"
+  ],
+  "blocked_features": [
+    "periodo",
+    "estu_consecutivo",
+    "estu_tipodocumento",
+    "estu_nacionalidad",
+    "cluster_rendimiento_kmeansplusplus"
+  ],
+  "context_features_used_by_model": [
+    "cole_area_ubicacion",
+    "cole_depto_ubicacion",
+    "cole_jornada",
+    "cole_naturaleza"
+  ],
+  "display_original_sensitive_values": false,
+  "display_transformed_feature_names": false,
+  "display_raw_shap_values": false,
+  "maximum_visible_factors": 3,
+  "only_positive_risk_contributions": true,
+  "fallback_message": "El modelo identificó riesgo, pero no dispone de suficientes factores individuales autorizados para presentar una explicación segura."
+}

@@ -1,0 +1,83 @@
+{
+  "model_name": "S0-XGBoost",
+  "model_version": "1.0.0",
+  "strategy": "S0_global_sin_cluster",
+  "algorithm": "xgboost",
+  "target": "riesgo_global_p30",
+  "positive_class": 1,
+  "risk_threshold": 0.47,
+  "score_label": "Probabilidad estimada por el modelo",
+  "score_is_externally_calibrated": false,
+  "number_of_input_features": 30,
+  "input_features": [
+    "cole_area_ubicacion",
+    "cole_depto_ubicacion",
+    "cole_jornada",
+    "cole_naturaleza",
+    "estu_dedicacioninternet",
+    "estu_dedicacionlecturadiaria",
+    "estu_genero",
+    "estu_horassemanatrabaja",
+    "estu_tiporemuneracion",
+    "fami_comecarnepescadohuevo",
+    "fami_comecerealfrutoslegumbre",
+    "fami_comelechederivados",
+    "fami_cuartoshogar",
+    "fami_educacionmadre",
+    "fami_educacionpadre",
+    "fami_estratovivienda",
+    "fami_numlibros",
+    "fami_personashogar",
+    "fami_situacioneconomica",
+    "fami_tieneautomovil",
+    "fami_tienecomputador",
+    "fami_tieneconsolavideojuegos",
+    "fami_tienehornomicroogas",
+    "fami_tieneinternet",
+    "fami_tienelavadora",
+    "fami_tienemotocicleta",
+    "fami_tieneserviciotv",
+    "fami_trabajolabormadre",
+    "fami_trabajolaborpadre",
+    "cluster_rendimiento_gmm"
+  ],
+  "pipeline_steps": [
+    "preprocess",
+    "model"
+  ],
+  "classes": [
+    0,
+    1
+  ],
+  "best_params": {
+    "model__colsample_bytree": 0.6581100615381982,
+    "model__gamma": 0.9258904771485252,
+    "model__learning_rate": 0.06947505347059078,
+    "model__max_depth": 5,
+    "model__min_child_weight": 2,
+    "model__n_estimators": 586,
+    "model__reg_alpha": 0.00018085779750679021,
+    "model__reg_lambda": 3.683842033241238,
+    "model__scale_pos_weight": 2,
+    "model__subsample": 0.877491095720558
+  },
+  "exported_at_utc": "2026-07-14T04:15:08.259893+00:00",
+  "software": {
+    "python": "3.11.1 (tags/v3.11.1:a7a450f, Dec  6 2022, 19:58:39) [MSC v.1934 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "numpy": "1.26.4",
+    "pandas": "3.0.3",
+    "scikit_learn": "1.9.0",
+    "xgboost": "3.2.0",
+    "joblib": "1.5.3"
+  },
+  "confidentiality": {
+    "contains_personal_identifiers": false,
+    "persist_input_records": false,
+    "public_access_allowed": false
+  },
+  "explanation_policy_file": "explanation_policy.json",
+  "schema_file": "input_schema.json",
+  "categories_file": "encoder_categories.json",
+  "feature_map_file": "transformed_feature_map.json"
+}

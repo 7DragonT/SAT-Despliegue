@@ -1,0 +1,40 @@
+{
+  "input": {
+    "cole_area_ubicacion": "URBANO",
+    "cole_depto_ubicacion": "ATLANTICO",
+    "cole_jornada": "MAÑANA",
+    "cole_naturaleza": "OFICIAL",
+    "estu_dedicacioninternet": "No Navega Internet",
+    "estu_dedicacionlecturadiaria": "No leo por entretenimiento",
+    "estu_genero": "F",
+    "estu_horassemanatrabaja": "0",
+    "estu_tiporemuneracion": "No",
+    "fami_comecarnepescadohuevo": "Todos o casi todos los días",
+    "fami_comecerealfrutoslegumbre": "3 a 5 veces por semana",
+    "fami_comelechederivados": "Nunca o rara vez comemos eso",
+    "fami_cuartoshogar": "Cinco",
+    "fami_educacionmadre": "Secundaria completa",
+    "fami_educacionpadre": "Secundaria completa",
+    "fami_estratovivienda": "Estrato 3",
+    "fami_numlibros": "11 A 25 LIBROS",
+    "fami_personashogar": "9 o más",
+    "fami_situacioneconomica": "Mejor",
+    "fami_tieneautomovil": "No",
+    "fami_tienecomputador": "No",
+    "fami_tieneconsolavideojuegos": "No",
+    "fami_tienehornomicroogas": "Si",
+    "fami_tieneinternet": "No",
+    "fami_tienelavadora": "Si",
+    "fami_tienemotocicleta": "No",
+    "fami_tieneserviciotv": "Si",
+    "fami_trabajolabormadre": "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción",
+    "fami_trabajolaborpadre": "No sabe",
+    "cluster_rendimiento_gmm": 6
+  },
+  "expected_output": {
+    "risk_score": 0.9405971765518188,
+    "risk_threshold": 0.47,
+    "risk_class": 1,
+    "risk_label": "Riesgo identificado"
+  }
+}
