@@ -5,7 +5,7 @@
   "algorithm": "xgboost",
   "target": "riesgo_global_p30",
   "positive_class": 1,
-  "risk_threshold": 0.47,
+  "risk_threshold": 0.57,
   "score_label": "Probabilidad estimada por el modelo",
   "score_is_externally_calibrated": false,
   "number_of_input_features": 30,
