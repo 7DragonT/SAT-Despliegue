@@ -4,8 +4,6 @@ import json
 from pathlib import Path
 
 import joblib
-from fastapi import FastAPI
-
 from typing import Any
 
 import pandas as pd
@@ -87,17 +85,6 @@ schema = cargar_json(
     SCHEMA_PATH
 )
 
-for required_path in [
-    MODEL_PATH,
-    METADATA_PATH,
-    SCHEMA_PATH,
-    CATEGORIES_PATH,
-]:
-    if not required_path.exists():
-        raise FileNotFoundError(
-            f"No se encontró el artefacto: {required_path}"
-        )
-
 categories = cargar_json(
     CATEGORIES_PATH
 )
@@ -108,7 +95,9 @@ feature_map = cargar_json(
 
 FEATURE_LOOKUP = {
     item["transformed_feature"]: item
-    for item in feature_map["features"]
+    for item in feature_map.get("features", [])
+    if item.get("transformed_feature")
+    and item.get("original_feature")
 }
 policy = cargar_json(
     POLICY_PATH
@@ -355,19 +344,33 @@ def obtener_factores_visibles(
         )
     )
 
+    # Compatibilidad con explanation_policy.json v2.0.0
+    # y con versiones anteriores.
     blocked_features = set(
         policy.get(
-            "blocked_features",
-            [],
+            "exclude_features",
+            policy.get(
+                "blocked_features",
+                [],
+            ),
         )
     )
 
+    # Lista segura: solo variables con mensaje amigable.
     allowed_features = set(
-        policy.get(
-            "allowed_visible_features",
-            [],
-        )
+        MENSAJES_AMIGABLES
     )
+
+    # Si la política define explícitamente variables visibles,
+    # se aplica como restricción adicional.
+    configured_allowed = policy.get(
+        "allowed_visible_features"
+    )
+
+    if configured_allowed:
+        allowed_features &= set(
+            configured_allowed
+        )
 
     grouped = defaultdict(float)
 
@@ -389,16 +392,33 @@ def obtener_factores_visibles(
         if mapping is None:
             continue
 
-        original_feature = mapping["original_feature"]
+        original_feature = mapping.get(
+            "original_feature"
+        )
 
-        if original_feature is None:
+        if not original_feature:
+            continue
+
+        if not mapping.get(
+            "show_to_user",
+            False,
+        ):
+            continue
+
+        if mapping.get(
+            "sensitive",
+            False,
+        ):
             continue
 
         if original_feature in blocked_features:
             continue
 
-        if original_feature.startswith(
+        if (
             blocked_prefixes
+            and original_feature.startswith(
+                blocked_prefixes
+            )
         ):
             continue
 
@@ -538,7 +558,7 @@ def predecir(payload: dict[str, Any]) -> dict:
     """
     Genera la predicción de riesgo educativo.
 
-    La entrada debe contener exactamente las 30 variables
+    La entrada debe contener exactamente las variables
     definidas en input_schema.json.
     """
 
@@ -640,13 +660,30 @@ def predecir(payload: dict[str, Any]) -> dict:
         probability >= threshold
     )
 
-    factores = (
-    obtener_factores_visibles(
-        input_frame
+    maximum_factors = int(
+        policy.get(
+            "maximum_factors_returned",
+            3,
+        )
     )
-    if is_risk
-    else []
-    )
+
+    try:
+        factores = (
+            obtener_factores_visibles(
+                input_frame=input_frame,
+                max_factores=maximum_factors,
+            )
+            if is_risk
+            else []
+        )
+    except Exception as exc:
+        # La predicción principal no debe fallar si falla
+        # únicamente la capa de explicabilidad.
+        print(
+            "Error al generar factores explicativos:",
+            repr(exc),
+        )
+        factores = []
 
     return {
     "resultado": (
@@ -668,5 +705,8 @@ def predecir(payload: dict[str, Any]) -> dict:
     "advertencia": (
         "Resultado orientativo generado por un "
         "modelo estadístico. No constituye un diagnóstico."
+    ),
+    "mensaje_factores": policy.get(
+        "user_message"
     ),
 }
