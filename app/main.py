@@ -472,12 +472,14 @@ def health() -> dict:
 def obtener_esquema() -> dict[str, Any]:
     """
     Devuelve las variables requeridas por el modelo,
-    su tipología y las categorías aprendidas durante
-    el entrenamiento.
+    su tipología y las categorías permitidas para
+    construir el formulario de entrada.
     """
 
     features = schema["features"]
 
+    # Identificar las variables según el tipo declarado
+    # en input_schema.json.
     numeric_features = [
         feature["name"]
         for feature in features
@@ -490,26 +492,40 @@ def obtener_esquema() -> dict[str, Any]:
         if feature.get("type") == "categorical"
     ]
 
-    # El esquema permite nulos solo si al menos una
-    # variable está marcada explícitamente como nullable.
+    # Construir el diccionario que Streamlit espera:
+    #
+    # {
+    #     "nombre_variable": ["categoria_1", "categoria_2"]
+    # }
+    #
+    # Las categorías se obtienen directamente de
+    # allowed_values dentro de input_schema.json.
+    categories_by_feature = {
+        feature["name"]: feature.get(
+            "allowed_values",
+            [],
+        )
+        for feature in features
+        if feature.get("type") == "categorical"
+    }
+
     allow_null_values = any(
         feature.get("nullable", False)
         for feature in features
     )
 
     return {
-        "schema_version": schema["schema_version"],
-        "model_name": schema["model_name"],
+        "schema_version": schema.get("schema_version"),
+        "model_name": schema.get("model_name"),
         "number_of_features": schema["number_of_features"],
         "feature_order": schema["feature_order"],
         "features": features,
         "numeric_features": numeric_features,
         "categorical_features": categorical_features,
-        "categories": categories,
+        "categories": categories_by_feature,
         "allow_null_values": allow_null_values,
         "allow_extra_columns": False,
     }
-
 @app.post("/predict")
 def predecir(payload: dict[str, Any]) -> dict:
     """
