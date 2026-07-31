@@ -1,30 +1,22 @@
 {
-  "deployment_package_version": "1.0.0",
-  "created_at_utc": "2026-07-14T04:15:09.340743+00:00",
-  "model_file": "s0_xgboost_pipeline.joblib",
-  "metadata_file": "model_metadata.json",
-  "schema_file": "input_schema.json",
-  "categories_file": "encoder_categories.json",
-  "transformed_feature_map_file": "transformed_feature_map.json",
-  "explanation_policy_file": "explanation_policy.json",
-  "reference_sample_file": "deployment_reference_sample.parquet",
-  "test_case_file": "deployment_test_case.json",
-  "checksums_file": "checksums_sha256.json",
-  "winner_validation": {
-    "strategy": "S0_global_sin_cluster",
-    "algorithm": "xgboost",
-    "target": "riesgo_global_p30",
-    "threshold": 0.47
-  },
-  "serialization_equivalence_test": {
-    "passed": true,
-    "expected_score": 0.9405971765518188,
-    "reloaded_score": 0.9405971765518188,
-    "absolute_difference": 0.0
-  },
-  "limitations": [
-    "El score no fue calibrado externamente; debe presentarse como probabilidad estimada por el modelo.",
-    "S0 utiliza variables contextuales internamente, pero estas se bloquean en la explicación visible.",
-    "Las explicaciones SHAP describen el comportamiento del modelo y no establecen causalidad."
-  ]
+  "manifest_version": "2.0.0",
+  "created_at_utc": "2026-07-30T08:43:25.073274+00:00",
+  "deployment_name": "SAT_Soacha_XGBoost_nacional_sin_cluster",
+  "strategy": "S0_global_sin_cluster",
+  "algorithm": "xgboost",
+  "target": "riesgo_global_p30",
+  "risk_threshold": 0.47,
+  "number_of_input_features": 29,
+  "cluster_features": [],
+  "artifacts": {
+    "model": "s0_xgboost_pipeline.joblib",
+    "metadata": "model_metadata.json",
+    "input_schema": "input_schema.json",
+    "encoder_categories": "encoder_categories.json",
+    "transformed_feature_map": "transformed_feature_map.json",
+    "explanation_policy": "explanation_policy.json",
+    "reference_sample": "deployment_reference_sample.parquet",
+    "test_case": "deployment_test_case.json",
+    "checksums": "checksums_sha256.json"
+  }
 }

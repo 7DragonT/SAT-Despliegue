@@ -1,249 +1,283 @@
 {
-  "cole_area_ubicacion": [
-    "RURAL",
-    "URBANO"
+  "schema_version": "2.0.0",
+  "categorical_features": [
+    "cole_area_ubicacion",
+    "cole_depto_ubicacion",
+    "cole_jornada",
+    "cole_naturaleza",
+    "estu_dedicacioninternet",
+    "estu_dedicacionlecturadiaria",
+    "estu_genero",
+    "estu_horassemanatrabaja",
+    "estu_tiporemuneracion",
+    "fami_comecarnepescadohuevo",
+    "fami_comecerealfrutoslegumbre",
+    "fami_comelechederivados",
+    "fami_cuartoshogar",
+    "fami_educacionmadre",
+    "fami_educacionpadre",
+    "fami_estratovivienda",
+    "fami_numlibros",
+    "fami_personashogar",
+    "fami_situacioneconomica",
+    "fami_tieneautomovil",
+    "fami_tienecomputador",
+    "fami_tieneconsolavideojuegos",
+    "fami_tienehornomicroogas",
+    "fami_tieneinternet",
+    "fami_tienelavadora",
+    "fami_tienemotocicleta",
+    "fami_tieneserviciotv",
+    "fami_trabajolabormadre",
+    "fami_trabajolaborpadre"
   ],
-  "cole_depto_ubicacion": [
-    "AMAZONAS",
-    "ANTIOQUIA",
-    "ARAUCA",
-    "ATLANTICO",
-    "BOGOTÁ",
-    "BOLIVAR",
-    "BOYACA",
-    "CALDAS",
-    "CAQUETA",
-    "CASANARE",
-    "CAUCA",
-    "CESAR",
-    "CHOCO",
-    "CORDOBA",
-    "CUNDINAMARCA",
-    "GUAINIA",
-    "GUAVIARE",
-    "HUILA",
-    "LA GUAJIRA",
-    "MAGDALENA",
-    "META",
-    "NARIÑO",
-    "NORTE SANTANDER",
-    "PUTUMAYO",
-    "QUINDIO",
-    "RISARALDA",
-    "SAN ANDRES",
-    "SANTANDER",
-    "SUCRE",
-    "TOLIMA",
-    "VALLE",
-    "VAUPES",
-    "VICHADA"
-  ],
-  "cole_jornada": [
-    "COMPLETA",
-    "MAÑANA",
-    "TARDE",
-    "UNICA"
-  ],
-  "cole_naturaleza": [
-    "NO OFICIAL",
-    "OFICIAL"
-  ],
-  "estu_dedicacioninternet": [
-    "30 minutos o menos",
-    "Entre 1 y 3 horas",
-    "Entre 30 y 60 minutos",
-    "Más de 3 horas",
-    "No Navega Internet",
-    "SIN_DATO"
-  ],
-  "estu_dedicacionlecturadiaria": [
-    "30 minutos o menos",
-    "Entre 1 y 2 horas",
-    "Entre 30 y 60 minutos",
-    "Más de 2 horas",
-    "No leo por entretenimiento",
-    "SIN_DATO"
-  ],
-  "estu_genero": [
-    "F",
-    "M"
-  ],
-  "estu_horassemanatrabaja": [
-    "0",
-    "Entre 11 y 20 horas",
-    "Entre 21 y 30 horas",
-    "Menos de 10 horas",
-    "Más de 30 horas",
-    "SIN_DATO"
-  ],
-  "estu_tiporemuneracion": [
-    "No",
-    "SIN_DATO",
-    "Si, en efectivo",
-    "Si, en efectivo y especie",
-    "Si, en especie"
-  ],
-  "fami_comecarnepescadohuevo": [
-    "1 o 2 veces por semana",
-    "3 a 5 veces por semana",
-    "Nunca o rara vez comemos eso",
-    "SIN_DATO",
-    "Todos o casi todos los días"
-  ],
-  "fami_comecerealfrutoslegumbre": [
-    "1 o 2 veces por semana",
-    "3 a 5 veces por semana",
-    "Nunca o rara vez comemos eso",
-    "SIN_DATO",
-    "Todos o casi todos los días"
-  ],
-  "fami_comelechederivados": [
-    "1 o 2 veces por semana",
-    "3 a 5 veces por semana",
-    "Nunca o rara vez comemos eso",
-    "SIN_DATO",
-    "Todos o casi todos los días"
-  ],
-  "fami_cuartoshogar": [
-    "Cinco",
-    "Cuatro",
-    "Dos",
-    "SIN_DATO",
-    "Seis o mas",
-    "Tres",
-    "Uno"
-  ],
-  "fami_educacionmadre": [
-    "Educación profesional completa",
-    "Educación profesional incompleta",
-    "Ninguno",
-    "No Aplica",
-    "No sabe",
-    "Postgrado",
-    "Primaria completa",
-    "Primaria incompleta",
-    "SIN_DATO",
-    "Secundaria completa",
-    "Secundaria incompleta",
-    "Técnica o tecnológica completa",
-    "Técnica o tecnológica incompleta"
-  ],
-  "fami_educacionpadre": [
-    "Educación profesional completa",
-    "Educación profesional incompleta",
-    "Ninguno",
-    "No Aplica",
-    "No sabe",
-    "Postgrado",
-    "Primaria completa",
-    "Primaria incompleta",
-    "SIN_DATO",
-    "Secundaria completa",
-    "Secundaria incompleta",
-    "Técnica o tecnológica completa",
-    "Técnica o tecnológica incompleta"
-  ],
-  "fami_estratovivienda": [
-    "Estrato 1",
-    "Estrato 2",
-    "Estrato 3",
-    "Estrato 4",
-    "Estrato 5",
-    "Estrato 6",
-    "SIN_DATO",
-    "Sin Estrato"
-  ],
-  "fami_numlibros": [
-    "0 A 10 LIBROS",
-    "11 A 25 LIBROS",
-    "26 A 100 LIBROS",
-    "MÁS DE 100 LIBROS",
-    "SIN_DATO"
-  ],
-  "fami_personashogar": [
-    "1 a 2",
-    "3 a 4",
-    "5 a 6",
-    "7 a 8",
-    "9 o más",
-    "SIN_DATO"
-  ],
-  "fami_situacioneconomica": [
-    "Igual",
-    "Mejor",
-    "Peor",
-    "SIN_DATO"
-  ],
-  "fami_tieneautomovil": [
-    "No",
-    "SIN_DATO",
-    "Si"
-  ],
-  "fami_tienecomputador": [
-    "No",
-    "SIN_DATO",
-    "Si"
-  ],
-  "fami_tieneconsolavideojuegos": [
-    "No",
-    "SIN_DATO",
-    "Si"
-  ],
-  "fami_tienehornomicroogas": [
-    "No",
-    "SIN_DATO",
-    "Si"
-  ],
-  "fami_tieneinternet": [
-    "No",
-    "SIN_DATO",
-    "Si"
-  ],
-  "fami_tienelavadora": [
-    "No",
-    "SIN_DATO",
-    "Si"
-  ],
-  "fami_tienemotocicleta": [
-    "No",
-    "SIN_DATO",
-    "Si"
-  ],
-  "fami_tieneserviciotv": [
-    "No",
-    "SIN_DATO",
-    "Si"
-  ],
-  "fami_trabajolabormadre": [
-    "Es agricultor, pesquero o jornalero",
-    "Es dueño de un negocio grande, tiene un cargo de nivel directivo o gerencial",
-    "Es dueño de un negocio pequeño (tiene pocos empleados o no tiene, por ejemplo tienda, papelería, etc",
-    "Es operario de máquinas o conduce vehículos (taxita, chofer)",
-    "Es vendedor o trabaja en atención al público",
-    "No aplica",
-    "No sabe",
-    "Pensionado",
-    "SIN_DATO",
-    "Tiene un trabajo de tipo auxiliar administrativo (por ejemplo, secretario o asistente)",
-    "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción",
-    "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)",
-    "Trabaja en el hogar, no trabaja o estudia",
-    "Trabaja por cuenta propia (por ejemplo plomero, electricista)"
-  ],
-  "fami_trabajolaborpadre": [
-    "Es agricultor, pesquero o jornalero",
-    "Es dueño de un negocio grande, tiene un cargo de nivel directivo o gerencial",
-    "Es dueño de un negocio pequeño (tiene pocos empleados o no tiene, por ejemplo tienda, papelería, etc",
-    "Es operario de máquinas o conduce vehículos (taxita, chofer)",
-    "Es vendedor o trabaja en atención al público",
-    "No aplica",
-    "No sabe",
-    "Pensionado",
-    "SIN_DATO",
-    "Tiene un trabajo de tipo auxiliar administrativo (por ejemplo, secretario o asistente)",
-    "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción",
-    "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)",
-    "Trabaja en el hogar, no trabaja o estudia",
-    "Trabaja por cuenta propia (por ejemplo plomero, electricista)"
-  ]
+  "categories": {
+    "cole_area_ubicacion": [
+      "RURAL",
+      "URBANO"
+    ],
+    "cole_depto_ubicacion": [
+      "AMAZONAS",
+      "ANTIOQUIA",
+      "ARAUCA",
+      "ATLANTICO",
+      "BOGOTÁ",
+      "BOLIVAR",
+      "BOYACA",
+      "CALDAS",
+      "CAQUETA",
+      "CASANARE",
+      "CAUCA",
+      "CESAR",
+      "CHOCO",
+      "CORDOBA",
+      "CUNDINAMARCA",
+      "GUAINIA",
+      "GUAVIARE",
+      "HUILA",
+      "LA GUAJIRA",
+      "MAGDALENA",
+      "META",
+      "NARIÑO",
+      "NORTE SANTANDER",
+      "PUTUMAYO",
+      "QUINDIO",
+      "RISARALDA",
+      "SAN ANDRES",
+      "SANTANDER",
+      "SUCRE",
+      "TOLIMA",
+      "VALLE",
+      "VAUPES",
+      "VICHADA"
+    ],
+    "cole_jornada": [
+      "COMPLETA",
+      "MAÑANA",
+      "TARDE",
+      "UNICA"
+    ],
+    "cole_naturaleza": [
+      "NO OFICIAL",
+      "OFICIAL"
+    ],
+    "estu_dedicacioninternet": [
+      "30 minutos o menos",
+      "Entre 1 y 3 horas",
+      "Entre 30 y 60 minutos",
+      "Más de 3 horas",
+      "No Navega Internet",
+      "SIN_DATO"
+    ],
+    "estu_dedicacionlecturadiaria": [
+      "30 minutos o menos",
+      "Entre 1 y 2 horas",
+      "Entre 30 y 60 minutos",
+      "Más de 2 horas",
+      "No leo por entretenimiento",
+      "SIN_DATO"
+    ],
+    "estu_genero": [
+      "F",
+      "M"
+    ],
+    "estu_horassemanatrabaja": [
+      "0",
+      "Entre 11 y 20 horas",
+      "Entre 21 y 30 horas",
+      "Menos de 10 horas",
+      "Más de 30 horas",
+      "SIN_DATO"
+    ],
+    "estu_tiporemuneracion": [
+      "No",
+      "SIN_DATO",
+      "Si, en efectivo",
+      "Si, en efectivo y especie",
+      "Si, en especie"
+    ],
+    "fami_comecarnepescadohuevo": [
+      "1 o 2 veces por semana",
+      "3 a 5 veces por semana",
+      "Nunca o rara vez comemos eso",
+      "SIN_DATO",
+      "Todos o casi todos los días"
+    ],
+    "fami_comecerealfrutoslegumbre": [
+      "1 o 2 veces por semana",
+      "3 a 5 veces por semana",
+      "Nunca o rara vez comemos eso",
+      "SIN_DATO",
+      "Todos o casi todos los días"
+    ],
+    "fami_comelechederivados": [
+      "1 o 2 veces por semana",
+      "3 a 5 veces por semana",
+      "Nunca o rara vez comemos eso",
+      "SIN_DATO",
+      "Todos o casi todos los días"
+    ],
+    "fami_cuartoshogar": [
+      "Cinco",
+      "Cuatro",
+      "Dos",
+      "SIN_DATO",
+      "Seis o mas",
+      "Tres",
+      "Uno"
+    ],
+    "fami_educacionmadre": [
+      "Educación profesional completa",
+      "Educación profesional incompleta",
+      "Ninguno",
+      "No Aplica",
+      "No sabe",
+      "Postgrado",
+      "Primaria completa",
+      "Primaria incompleta",
+      "SIN_DATO",
+      "Secundaria completa",
+      "Secundaria incompleta",
+      "Técnica o tecnológica completa",
+      "Técnica o tecnológica incompleta"
+    ],
+    "fami_educacionpadre": [
+      "Educación profesional completa",
+      "Educación profesional incompleta",
+      "Ninguno",
+      "No Aplica",
+      "No sabe",
+      "Postgrado",
+      "Primaria completa",
+      "Primaria incompleta",
+      "SIN_DATO",
+      "Secundaria completa",
+      "Secundaria incompleta",
+      "Técnica o tecnológica completa",
+      "Técnica o tecnológica incompleta"
+    ],
+    "fami_estratovivienda": [
+      "Estrato 1",
+      "Estrato 2",
+      "Estrato 3",
+      "Estrato 4",
+      "Estrato 5",
+      "Estrato 6",
+      "SIN_DATO",
+      "Sin Estrato"
+    ],
+    "fami_numlibros": [
+      "0 A 10 LIBROS",
+      "11 A 25 LIBROS",
+      "26 A 100 LIBROS",
+      "MÁS DE 100 LIBROS",
+      "SIN_DATO"
+    ],
+    "fami_personashogar": [
+      "1 a 2",
+      "3 a 4",
+      "5 a 6",
+      "7 a 8",
+      "9 o más",
+      "SIN_DATO"
+    ],
+    "fami_situacioneconomica": [
+      "Igual",
+      "Mejor",
+      "Peor",
+      "SIN_DATO"
+    ],
+    "fami_tieneautomovil": [
+      "No",
+      "SIN_DATO",
+      "Si"
+    ],
+    "fami_tienecomputador": [
+      "No",
+      "SIN_DATO",
+      "Si"
+    ],
+    "fami_tieneconsolavideojuegos": [
+      "No",
+      "SIN_DATO",
+      "Si"
+    ],
+    "fami_tienehornomicroogas": [
+      "No",
+      "SIN_DATO",
+      "Si"
+    ],
+    "fami_tieneinternet": [
+      "No",
+      "SIN_DATO",
+      "Si"
+    ],
+    "fami_tienelavadora": [
+      "No",
+      "SIN_DATO",
+      "Si"
+    ],
+    "fami_tienemotocicleta": [
+      "No",
+      "SIN_DATO",
+      "Si"
+    ],
+    "fami_tieneserviciotv": [
+      "No",
+      "SIN_DATO",
+      "Si"
+    ],
+    "fami_trabajolabormadre": [
+      "Es agricultor, pesquero o jornalero",
+      "Es dueño de un negocio grande, tiene un cargo de nivel directivo o gerencial",
+      "Es dueño de un negocio pequeño (tiene pocos empleados o no tiene, por ejemplo tienda, papelería, etc",
+      "Es operario de máquinas o conduce vehículos (taxita, chofer)",
+      "Es vendedor o trabaja en atención al público",
+      "No aplica",
+      "No sabe",
+      "Pensionado",
+      "SIN_DATO",
+      "Tiene un trabajo de tipo auxiliar administrativo (por ejemplo, secretario o asistente)",
+      "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción",
+      "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)",
+      "Trabaja en el hogar, no trabaja o estudia",
+      "Trabaja por cuenta propia (por ejemplo plomero, electricista)"
+    ],
+    "fami_trabajolaborpadre": [
+      "Es agricultor, pesquero o jornalero",
+      "Es dueño de un negocio grande, tiene un cargo de nivel directivo o gerencial",
+      "Es dueño de un negocio pequeño (tiene pocos empleados o no tiene, por ejemplo tienda, papelería, etc",
+      "Es operario de máquinas o conduce vehículos (taxita, chofer)",
+      "Es vendedor o trabaja en atención al público",
+      "No aplica",
+      "No sabe",
+      "Pensionado",
+      "SIN_DATO",
+      "Tiene un trabajo de tipo auxiliar administrativo (por ejemplo, secretario o asistente)",
+      "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción",
+      "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)",
+      "Trabaja en el hogar, no trabaja o estudia",
+      "Trabaja por cuenta propia (por ejemplo plomero, electricista)"
+    ]
+  }
 }

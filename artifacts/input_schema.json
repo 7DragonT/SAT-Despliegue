@@ -1,42 +1,8 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "2.0.0",
+  "model_name": "S0-XGBoost",
+  "number_of_features": 29,
   "feature_order": [
-    "cole_area_ubicacion",
-    "cole_depto_ubicacion",
-    "cole_jornada",
-    "cole_naturaleza",
-    "estu_dedicacioninternet",
-    "estu_dedicacionlecturadiaria",
-    "estu_genero",
-    "estu_horassemanatrabaja",
-    "estu_tiporemuneracion",
-    "fami_comecarnepescadohuevo",
-    "fami_comecerealfrutoslegumbre",
-    "fami_comelechederivados",
-    "fami_cuartoshogar",
-    "fami_educacionmadre",
-    "fami_educacionpadre",
-    "fami_estratovivienda",
-    "fami_numlibros",
-    "fami_personashogar",
-    "fami_situacioneconomica",
-    "fami_tieneautomovil",
-    "fami_tienecomputador",
-    "fami_tieneconsolavideojuegos",
-    "fami_tienehornomicroogas",
-    "fami_tieneinternet",
-    "fami_tienelavadora",
-    "fami_tienemotocicleta",
-    "fami_tieneserviciotv",
-    "fami_trabajolabormadre",
-    "fami_trabajolaborpadre",
-    "cluster_rendimiento_gmm"
-  ],
-  "number_of_features": 30,
-  "numeric_features": [
-    "cluster_rendimiento_gmm"
-  ],
-  "categorical_features": [
     "cole_area_ubicacion",
     "cole_depto_ubicacion",
     "cole_jornada",
@@ -67,41 +33,485 @@
     "fami_trabajolabormadre",
     "fami_trabajolaborpadre"
   ],
-  "training_dtypes": {
-    "cole_area_ubicacion": "str",
-    "cole_depto_ubicacion": "str",
-    "cole_jornada": "str",
-    "cole_naturaleza": "str",
-    "estu_dedicacioninternet": "category",
-    "estu_dedicacionlecturadiaria": "category",
-    "estu_genero": "str",
-    "estu_horassemanatrabaja": "category",
-    "estu_tiporemuneracion": "str",
-    "fami_comecarnepescadohuevo": "str",
-    "fami_comecerealfrutoslegumbre": "str",
-    "fami_comelechederivados": "str",
-    "fami_cuartoshogar": "category",
-    "fami_educacionmadre": "category",
-    "fami_educacionpadre": "category",
-    "fami_estratovivienda": "category",
-    "fami_numlibros": "category",
-    "fami_personashogar": "category",
-    "fami_situacioneconomica": "str",
-    "fami_tieneautomovil": "category",
-    "fami_tienecomputador": "category",
-    "fami_tieneconsolavideojuegos": "category",
-    "fami_tienehornomicroogas": "category",
-    "fami_tieneinternet": "category",
-    "fami_tienelavadora": "category",
-    "fami_tienemotocicleta": "category",
-    "fami_tieneserviciotv": "category",
-    "fami_trabajolabormadre": "str",
-    "fami_trabajolaborpadre": "str",
-    "cluster_rendimiento_gmm": "int32"
-  },
-  "allow_missing_columns": false,
-  "allow_extra_columns": false,
-  "allow_null_values": false,
-  "positive_class": 1,
-  "risk_threshold": 0.47
+  "features": [
+    {
+      "name": "cole_area_ubicacion",
+      "label": "Cole area ubicacion",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "RURAL",
+      "allowed_values": [
+        "RURAL",
+        "URBANO"
+      ]
+    },
+    {
+      "name": "cole_depto_ubicacion",
+      "label": "Cole depto ubicacion",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "HUILA",
+      "allowed_values": [
+        "AMAZONAS",
+        "ANTIOQUIA",
+        "ARAUCA",
+        "ATLANTICO",
+        "BOGOTÁ",
+        "BOLIVAR",
+        "BOYACA",
+        "CALDAS",
+        "CAQUETA",
+        "CASANARE",
+        "CAUCA",
+        "CESAR",
+        "CHOCO",
+        "CORDOBA",
+        "CUNDINAMARCA",
+        "GUAINIA",
+        "GUAVIARE",
+        "HUILA",
+        "LA GUAJIRA",
+        "MAGDALENA",
+        "META",
+        "NARIÑO",
+        "NORTE SANTANDER",
+        "PUTUMAYO",
+        "QUINDIO",
+        "RISARALDA",
+        "SAN ANDRES",
+        "SANTANDER",
+        "SUCRE",
+        "TOLIMA",
+        "VALLE",
+        "VAUPES",
+        "VICHADA"
+      ]
+    },
+    {
+      "name": "cole_jornada",
+      "label": "Cole jornada",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "UNICA",
+      "allowed_values": [
+        "COMPLETA",
+        "MAÑANA",
+        "TARDE",
+        "UNICA"
+      ]
+    },
+    {
+      "name": "cole_naturaleza",
+      "label": "Cole naturaleza",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "OFICIAL",
+      "allowed_values": [
+        "NO OFICIAL",
+        "OFICIAL"
+      ]
+    },
+    {
+      "name": "estu_dedicacioninternet",
+      "label": "Estu dedicacioninternet",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Entre 30 y 60 minutos",
+      "allowed_values": [
+        "30 minutos o menos",
+        "Entre 1 y 3 horas",
+        "Entre 30 y 60 minutos",
+        "Más de 3 horas",
+        "No Navega Internet",
+        "SIN_DATO"
+      ]
+    },
+    {
+      "name": "estu_dedicacionlecturadiaria",
+      "label": "Estu dedicacionlecturadiaria",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Entre 1 y 2 horas",
+      "allowed_values": [
+        "30 minutos o menos",
+        "Entre 1 y 2 horas",
+        "Entre 30 y 60 minutos",
+        "Más de 2 horas",
+        "No leo por entretenimiento",
+        "SIN_DATO"
+      ]
+    },
+    {
+      "name": "estu_genero",
+      "label": "Estu genero",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "F",
+      "allowed_values": [
+        "F",
+        "M"
+      ]
+    },
+    {
+      "name": "estu_horassemanatrabaja",
+      "label": "Estu horassemanatrabaja",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Menos de 10 horas",
+      "allowed_values": [
+        "0",
+        "Entre 11 y 20 horas",
+        "Entre 21 y 30 horas",
+        "Menos de 10 horas",
+        "Más de 30 horas",
+        "SIN_DATO"
+      ]
+    },
+    {
+      "name": "estu_tiporemuneracion",
+      "label": "Estu tiporemuneracion",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Si, en efectivo",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si, en efectivo",
+        "Si, en efectivo y especie",
+        "Si, en especie"
+      ]
+    },
+    {
+      "name": "fami_comecarnepescadohuevo",
+      "label": "Fami comecarnepescadohuevo",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Todos o casi todos los días",
+      "allowed_values": [
+        "1 o 2 veces por semana",
+        "3 a 5 veces por semana",
+        "Nunca o rara vez comemos eso",
+        "SIN_DATO",
+        "Todos o casi todos los días"
+      ]
+    },
+    {
+      "name": "fami_comecerealfrutoslegumbre",
+      "label": "Fami comecerealfrutoslegumbre",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Todos o casi todos los días",
+      "allowed_values": [
+        "1 o 2 veces por semana",
+        "3 a 5 veces por semana",
+        "Nunca o rara vez comemos eso",
+        "SIN_DATO",
+        "Todos o casi todos los días"
+      ]
+    },
+    {
+      "name": "fami_comelechederivados",
+      "label": "Fami comelechederivados",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "3 a 5 veces por semana",
+      "allowed_values": [
+        "1 o 2 veces por semana",
+        "3 a 5 veces por semana",
+        "Nunca o rara vez comemos eso",
+        "SIN_DATO",
+        "Todos o casi todos los días"
+      ]
+    },
+    {
+      "name": "fami_cuartoshogar",
+      "label": "Fami cuartoshogar",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Uno",
+      "allowed_values": [
+        "Cinco",
+        "Cuatro",
+        "Dos",
+        "SIN_DATO",
+        "Seis o mas",
+        "Tres",
+        "Uno"
+      ]
+    },
+    {
+      "name": "fami_educacionmadre",
+      "label": "Fami educacionmadre",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Educación profesional completa",
+      "allowed_values": [
+        "Educación profesional completa",
+        "Educación profesional incompleta",
+        "Ninguno",
+        "No Aplica",
+        "No sabe",
+        "Postgrado",
+        "Primaria completa",
+        "Primaria incompleta",
+        "SIN_DATO",
+        "Secundaria completa",
+        "Secundaria incompleta",
+        "Técnica o tecnológica completa",
+        "Técnica o tecnológica incompleta"
+      ]
+    },
+    {
+      "name": "fami_educacionpadre",
+      "label": "Fami educacionpadre",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Secundaria incompleta",
+      "allowed_values": [
+        "Educación profesional completa",
+        "Educación profesional incompleta",
+        "Ninguno",
+        "No Aplica",
+        "No sabe",
+        "Postgrado",
+        "Primaria completa",
+        "Primaria incompleta",
+        "SIN_DATO",
+        "Secundaria completa",
+        "Secundaria incompleta",
+        "Técnica o tecnológica completa",
+        "Técnica o tecnológica incompleta"
+      ]
+    },
+    {
+      "name": "fami_estratovivienda",
+      "label": "Fami estratovivienda",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Estrato 2",
+      "allowed_values": [
+        "Estrato 1",
+        "Estrato 2",
+        "Estrato 3",
+        "Estrato 4",
+        "Estrato 5",
+        "Estrato 6",
+        "SIN_DATO",
+        "Sin Estrato"
+      ]
+    },
+    {
+      "name": "fami_numlibros",
+      "label": "Fami numlibros",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "26 A 100 LIBROS",
+      "allowed_values": [
+        "0 A 10 LIBROS",
+        "11 A 25 LIBROS",
+        "26 A 100 LIBROS",
+        "MÁS DE 100 LIBROS",
+        "SIN_DATO"
+      ]
+    },
+    {
+      "name": "fami_personashogar",
+      "label": "Fami personashogar",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "1 a 2",
+      "allowed_values": [
+        "1 a 2",
+        "3 a 4",
+        "5 a 6",
+        "7 a 8",
+        "9 o más",
+        "SIN_DATO"
+      ]
+    },
+    {
+      "name": "fami_situacioneconomica",
+      "label": "Fami situacioneconomica",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Igual",
+      "allowed_values": [
+        "Igual",
+        "Mejor",
+        "Peor",
+        "SIN_DATO"
+      ]
+    },
+    {
+      "name": "fami_tieneautomovil",
+      "label": "Fami tieneautomovil",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "No",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si"
+      ]
+    },
+    {
+      "name": "fami_tienecomputador",
+      "label": "Fami tienecomputador",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Si",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si"
+      ]
+    },
+    {
+      "name": "fami_tieneconsolavideojuegos",
+      "label": "Fami tieneconsolavideojuegos",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "No",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si"
+      ]
+    },
+    {
+      "name": "fami_tienehornomicroogas",
+      "label": "Fami tienehornomicroogas",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Si",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si"
+      ]
+    },
+    {
+      "name": "fami_tieneinternet",
+      "label": "Fami tieneinternet",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Si",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si"
+      ]
+    },
+    {
+      "name": "fami_tienelavadora",
+      "label": "Fami tienelavadora",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "No",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si"
+      ]
+    },
+    {
+      "name": "fami_tienemotocicleta",
+      "label": "Fami tienemotocicleta",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "No",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si"
+      ]
+    },
+    {
+      "name": "fami_tieneserviciotv",
+      "label": "Fami tieneserviciotv",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Si",
+      "allowed_values": [
+        "No",
+        "SIN_DATO",
+        "Si"
+      ]
+    },
+    {
+      "name": "fami_trabajolabormadre",
+      "label": "Fami trabajolabormadre",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)",
+      "allowed_values": [
+        "Es agricultor, pesquero o jornalero",
+        "Es dueño de un negocio grande, tiene un cargo de nivel directivo o gerencial",
+        "Es dueño de un negocio pequeño (tiene pocos empleados o no tiene, por ejemplo tienda, papelería, etc",
+        "Es operario de máquinas o conduce vehículos (taxita, chofer)",
+        "Es vendedor o trabaja en atención al público",
+        "No aplica",
+        "No sabe",
+        "Pensionado",
+        "SIN_DATO",
+        "Tiene un trabajo de tipo auxiliar administrativo (por ejemplo, secretario o asistente)",
+        "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción",
+        "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)",
+        "Trabaja en el hogar, no trabaja o estudia",
+        "Trabaja por cuenta propia (por ejemplo plomero, electricista)"
+      ]
+    },
+    {
+      "name": "fami_trabajolaborpadre",
+      "label": "Fami trabajolaborpadre",
+      "type": "categorical",
+      "required": true,
+      "nullable": false,
+      "example": "Trabaja por cuenta propia (por ejemplo plomero, electricista)",
+      "allowed_values": [
+        "Es agricultor, pesquero o jornalero",
+        "Es dueño de un negocio grande, tiene un cargo de nivel directivo o gerencial",
+        "Es dueño de un negocio pequeño (tiene pocos empleados o no tiene, por ejemplo tienda, papelería, etc",
+        "Es operario de máquinas o conduce vehículos (taxita, chofer)",
+        "Es vendedor o trabaja en atención al público",
+        "No aplica",
+        "No sabe",
+        "Pensionado",
+        "SIN_DATO",
+        "Tiene un trabajo de tipo auxiliar administrativo (por ejemplo, secretario o asistente)",
+        "Trabaja como personal de limpieza, mantenimiento, seguridad o construcción",
+        "Trabaja como profesional (por ejemplo médico, abogado, ingeniero)",
+        "Trabaja en el hogar, no trabaja o estudia",
+        "Trabaja por cuenta propia (por ejemplo plomero, electricista)"
+      ]
+    }
+  ]
 }

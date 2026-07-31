@@ -1,14 +1,16 @@
 {
   "model_name": "S0-XGBoost",
-  "model_version": "1.0.0",
+  "model_version": "2.0.0",
+  "created_at_utc": "2026-07-30T08:43:24.675982+00:00",
   "strategy": "S0_global_sin_cluster",
   "algorithm": "xgboost",
   "target": "riesgo_global_p30",
   "positive_class": 1,
   "risk_threshold": 0.57,
+  "threshold_origin": "seleccionado_en_validacion_y_congelado_antes_del_test",
   "score_label": "Probabilidad estimada por el modelo",
   "score_is_externally_calibrated": false,
-  "number_of_input_features": 30,
+  "number_of_input_features": 29,
   "input_features": [
     "cole_area_ubicacion",
     "cole_depto_ubicacion",
@@ -38,17 +40,9 @@
     "fami_tienemotocicleta",
     "fami_tieneserviciotv",
     "fami_trabajolabormadre",
-    "fami_trabajolaborpadre",
-    "cluster_rendimiento_gmm"
+    "fami_trabajolaborpadre"
   ],
-  "pipeline_steps": [
-    "preprocess",
-    "model"
-  ],
-  "classes": [
-    0,
-    1
-  ],
+  "cluster_features": [],
   "best_params": {
     "model__colsample_bytree": 0.6581100615381982,
     "model__gamma": 0.9258904771485252,
@@ -61,23 +55,16 @@
     "model__scale_pos_weight": 2,
     "model__subsample": 0.877491095720558
   },
-  "exported_at_utc": "2026-07-14T04:15:08.259893+00:00",
-  "software": {
-    "python": "3.11.1 (tags/v3.11.1:a7a450f, Dec  6 2022, 19:58:39) [MSC v.1934 64 bit (AMD64)]",
-    "platform": "Windows-10-10.0.26200-SP0",
-    "numpy": "1.26.4",
-    "pandas": "3.0.3",
-    "scikit_learn": "1.9.0",
-    "xgboost": "3.2.0",
-    "joblib": "1.5.3"
-  },
-  "confidentiality": {
-    "contains_personal_identifiers": false,
-    "persist_input_records": false,
-    "public_access_allowed": false
-  },
-  "explanation_policy_file": "explanation_policy.json",
-  "schema_file": "input_schema.json",
-  "categories_file": "encoder_categories.json",
-  "feature_map_file": "transformed_feature_map.json"
+  "test_metrics": {
+    "criterio": "umbral_congelado_desde_validacion",
+    "threshold": 0.47,
+    "precision": 0.5191988742021411,
+    "recall": 0.7112220309810672,
+    "f1": 0.6002265992679101,
+    "balanced_accuracy": 0.7151152084088341,
+    "ks_max": 0.4322752176007449,
+    "roc_auc": 0.7951165481164457,
+    "average_precision": 0.6346048688508555,
+    "pct_alertados": 0.4096519492284411
+  }
 }
