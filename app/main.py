@@ -469,32 +469,45 @@ def health() -> dict:
     }
 
 @app.get("/schema")
-def obtener_esquema() -> dict:
+def obtener_esquema() -> dict[str, Any]:
     """
-    Devuelve las variables requeridas por el modelo
-    y las categorías aprendidas durante el entrenamiento.
+    Devuelve las variables requeridas por el modelo,
+    su tipología y las categorías aprendidas durante
+    el entrenamiento.
     """
 
+    features = schema["features"]
+
+    numeric_features = [
+        feature["name"]
+        for feature in features
+        if feature.get("type") == "numeric"
+    ]
+
+    categorical_features = [
+        feature["name"]
+        for feature in features
+        if feature.get("type") == "categorical"
+    ]
+
+    # El esquema permite nulos solo si al menos una
+    # variable está marcada explícitamente como nullable.
+    allow_null_values = any(
+        feature.get("nullable", False)
+        for feature in features
+    )
+
     return {
-        "number_of_features": schema[
-            "number_of_features"
-        ],
-        "feature_order": schema[
-            "feature_order"
-        ],
-        "numeric_features": schema[
-            "numeric_features"
-        ],
-        "categorical_features": schema[
-            "categorical_features"
-        ],
+        "schema_version": schema["schema_version"],
+        "model_name": schema["model_name"],
+        "number_of_features": schema["number_of_features"],
+        "feature_order": schema["feature_order"],
+        "features": features,
+        "numeric_features": numeric_features,
+        "categorical_features": categorical_features,
         "categories": categories,
-        "allow_null_values": schema[
-            "allow_null_values"
-        ],
-        "allow_extra_columns": schema[
-            "allow_extra_columns"
-        ],
+        "allow_null_values": allow_null_values,
+        "allow_extra_columns": False,
     }
 
 @app.post("/predict")
