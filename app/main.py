@@ -106,6 +106,10 @@ feature_map = cargar_json(
     FEATURE_MAP_PATH
 )
 
+FEATURE_LOOKUP = {
+    item["transformed_feature"]: item
+    for item in feature_map["features"]
+}
 policy = cargar_json(
     POLICY_PATH
 )
@@ -380,9 +384,12 @@ def obtener_factores_visibles(
         if contribution <= 0:
             continue
 
-        original_feature = feature_map.get(
-            transformed_name
-        )
+        mapping = FEATURE_LOOKUP.get(transformed_name)
+
+        if mapping is None:
+            continue
+
+        original_feature = mapping["original_feature"]
 
         if original_feature is None:
             continue
