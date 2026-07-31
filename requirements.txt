@@ -2,9 +2,9 @@ fastapi
 uvicorn[standard]
 streamlit
 requests
-pandas
-numpy
-scikit-learn
-xgboost
-joblib
+joblib==1.5.3
+numpy==1.26.4
+pandas==3.0.3
+scikit-learn==1.9.0
+xgboost==3.2.0
 pyarrow
