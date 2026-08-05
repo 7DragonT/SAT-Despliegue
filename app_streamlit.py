@@ -26,6 +26,287 @@ st.set_page_config(
     layout="centered",
 )
 
+# ------------------------------------------------------------------
+# Configuración visual de los campos
+# ------------------------------------------------------------------
+
+FIELD_CONFIG = {
+    # ==============================================================
+    # Datos del establecimiento educativo
+    # ==============================================================
+
+    "cole_area_ubicacion": {
+        "section": "1. Información del establecimiento",
+        "label": "¿En qué zona se úbica el establecimiento?",
+        "help": (
+            "Seleccione si el establecimiento se encuentra"
+            "en una zona urbana o rural."
+        ),
+    },
+
+    "cole_depto_ubicacion": {
+        "section": "1. Información del establecimiento",
+        "label": "¿En qué departamento está ubicado el establecimiento?",
+        "help": (
+            "Seleccione el departamento de "
+            "la sede educativa."
+        ),
+    },
+
+    "cole_jornada": {
+        "section": "1. Información del establecimiento",
+        "label": "¿Cuál es la jornada del establecimiento?",
+        "help": (
+            "Seleccione la jornada en la que estudia "
+            "el estudiante."
+        ),
+    },
+
+    "cole_naturaleza": {
+        "section": "1. Información del establecimiento",
+        "label": "¿Cuál es la naturaleza del establecimiento?",
+        "help": (
+            "Indique si el establecimiento es oficial "
+            "o no oficial."
+        ),
+    },
+
+
+    # ==============================================================
+    # Hábitos y condiciones del estudiante
+    # ==============================================================
+
+    "estu_dedicacioninternet": {
+        "section": "2. Hábitos y condiciones del estudiante",
+        "label": "¿Cuánto tiempo dedica el estudiante a diario al uso de internet?",
+        "help": (
+            "Seleccione el tiempo diario de uso promedio "
+            "de internet."
+        ),
+    },
+
+    "estu_dedicacionlecturadiaria": {
+        "section": "2. Hábitos y condiciones del estudiante",
+        "label": "¿Cuánto tiempo dedica a la lectura por entretenimiento cada día?",
+        "help": (
+            "Indique el tiempo diario de lectura de libros, revistas u otros "
+            "materiales por hobbie."
+        ),
+    },
+
+    "estu_genero": {
+        "section": "2. Hábitos y condiciones del estudiante",
+        "label": "¿Cuál es el género del estudiante?",
+        "help": (
+            "Seleccione la opción disponible "
+            "de genero."
+        ),
+    },
+
+    "estu_horassemanatrabaja": {
+        "section": "2. Hábitos y condiciones del estudiante",
+        "label": "¿Cuántas horas trabaja el estudiante a la semana?",
+        "help": (
+            "Seleccione el rango de horas "
+            "trabajadas semanalmente."
+        ),
+    },
+
+    "estu_tiporemuneracion": {
+        "section": "2. Hábitos y condiciones del estudiante",
+        "label": "Si trabja, ¿que tipo de remuneración recibe el estudiante por su trabajo?",
+        "help": (
+            "Indique si recibe pago en efectivo, en especie "
+            "o mediante ambas modalidades."
+        ),
+    },
+
+
+    # ==============================================================
+    # Alimentación y condiciones del hogar
+    # ==============================================================
+
+    "fami_comecarnepescadohuevo": {
+        "section": "3. Alimentación y condiciones del hogar",
+        "label": "¿Con qué frecuencia el hogar consume carne, pescado o huevo?",
+        "help": (
+            "Selecciona la frecuencia semanal con que consume estos "
+            "alimentos en el hogar."
+        ),
+    },
+
+    "fami_comecerealfrutoslegumbre": {
+        "section": "3. Alimentación y condiciones del hogar",
+        "label": "¿Con qué frecuencia el hogar consume cereales, frutas o legumbres?",
+        "help": (
+            "Selecciona la frecuencia semanal con que consume estos "
+            "alimentos en el hogar."
+        ),
+    },
+
+    "fami_comelechederivados": {
+        "section": "3. Alimentación y condiciones del hogar",
+        "label": "¿Con qué frecuencia el hogar consume leche o sus derivados?",
+        "help": (
+            "Selecciona la frecuencia semanal con que consume estos "
+            "alimentos en el hogar."
+        ),
+    },
+
+    "fami_cuartoshogar": {
+        "section": "3. Alimentación y condiciones del hogar",
+        "label": "¿Cuántos cuartos tiene el hogar?",
+        "help": (
+            "Seleccione el número de cuartos "
+            "de la vivienda."
+        ),
+    },
+
+    "fami_personashogar": {
+        "section": "3. Alimentación y condiciones del hogar",
+        "label": "¿Cuántas personas conforman el hogar?",
+        "help": (
+            "Indica las personas que habitan en la vivienda "
+            "incluyendo el estudiante."
+        ),
+    },
+
+    "fami_situacioneconomica": {
+        "section": "3. Alimentación y condiciones del hogar",
+        "label": "¿Cómo considera que ha cambiado la situación económica del hogar?",
+        "help": (
+            "Escoja como considera la situación económica actual en comparación "
+            "con la situación del periodo anterior."
+        ),
+    },
+
+
+    # ==============================================================
+    # Educación y ocupación de los padres
+    # ==============================================================
+
+    "fami_educacionmadre": {
+        "section": "4. Educación y ocupación de los padres",
+        "label": "¿Cuál es el nivel educativo más alto de la madre?",
+        "help": (
+            "Seleccione el nivel educativo más alto "
+            "de la madre."
+        ),
+    },
+
+    "fami_educacionpadre": {
+        "section": "4. Educación y ocupación de los padres",
+        "label": "¿Cuál es el nivel educativo más alto del padre?",
+        "help": (
+            "Seleccione el nivel educativo más alto "
+            "del padre."
+        ),
+    },
+
+    "fami_trabajolabormadre": {
+        "section": "4. Educación y ocupación de los padres",
+        "label": "¿Cuál es la actividad laboral principal de la madre?",
+        "help": (
+            "Seleccione la actividad principal "
+            "de ocupación de la madre."
+        ),
+    },
+
+    "fami_trabajolaborpadre": {
+        "section": "4. Educación y ocupación de los padres",
+        "label": "¿Cuál es la actividad laboral principal del padre?",
+        "help": (
+            "Seleccione la actividad principal "
+            "de ocupación del padre."
+        ),
+    },
+
+
+    # ==============================================================
+    # Condiciones socioeconómicas y recursos
+    # ==============================================================
+
+    "fami_estratovivienda": {
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
+        "label": "¿Cuál es el estrato económico de la vivienda?",
+        "help": (
+            "Seleccione el estrato "
+            "que corresponda del esrudiante."
+        ),
+    },
+
+    "fami_numlibros": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿Cuántos libros hay aproximadamente en el hogar?",
+        "help": (
+            "Marque los libros disponibles aproximados "
+            "en el hogar."
+        ),
+    },
+
+    "fami_tieneautomovil": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿El hogar dispone de automóvil?",
+        "help": "Seleccione la opción de disponibilidad " 
+        "de automovil que corresponda.",
+    },
+
+    "fami_tienecomputador": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿El hogar dispone de computador?",
+        "help": (
+            "Marque si dispone de de computadores de escritorio "
+            "o portátiles disponibles en el hogar."
+        ),
+    },
+
+    "fami_tieneconsolavideojuegos": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿El hogar dispone de consola de videojuegos?",
+        "help": "Seleccione si el hogar del estudiante "
+        "dispone de consola.",
+    },
+
+    "fami_tienehornomicroogas": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿El hogar dispone de horno microondas?",
+        "help": "Seleccione si el hogar del estudiante "
+        "dispone de horno microondas.",
+    },
+
+    "fami_tieneinternet": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿El hogar dispone de conexión a internet?",
+        "help": (
+            "Disponible de internet habitualmente o "
+            "en la vivienda del estudiante."
+        ),
+    },
+
+    "fami_tienelavadora": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿El hogar dispone de lavadora?",
+        "help": "Seleccione si el hogar del estudiante "
+        "dispone de lavadora.",
+    },
+
+    "fami_tienemotocicleta": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿El hogar dispone de motocicleta?",
+        "help": "Seleccione si el hogar del estudiante "
+        "dispone de Motocicleta.",
+    },
+
+    "fami_tieneserviciotv": {
+        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "label": "¿El hogar dispone de servicio de televisión?",
+        "help": (
+            "Indica si dispone de tv por cable, satélite "
+            "o servicios equivalentes en el hogar del estudiante."
+        ),
+    },
+}
+
 
 # ------------------------------------------------------------------
 # Control de acceso
@@ -92,7 +373,6 @@ def verificar_acceso() -> None:
 
 
 verificar_acceso()
-
 
 # ------------------------------------------------------------------
 # Encabezado de la aplicación
@@ -214,13 +494,43 @@ payload: dict[str, object] = {}
 
 with st.form("formulario_prediccion"):
 
-    st.subheader("Información del estudiante")
+    st.subheader("Formulario de evaluación")
+
+    st.info(
+        "Complete las cinco secciones utilizando la información "
+        "disponible del estudiante y de su hogar."
+    )
+
+    current_section = None
 
     for feature in feature_order:
 
-        # Variables categóricas:
-        # solo se muestran las categorías aprendidas
-        # durante el entrenamiento.
+        config = FIELD_CONFIG.get(
+            feature,
+            {
+                "section": "Información adicional",
+                "label": feature,
+                "help": None,
+            },
+        )
+
+        section = config["section"]
+        label = config["label"]
+        help_text = config.get("help")
+
+        # Mostrar un encabezado cuando comienza una nueva sección.
+        if section != current_section:
+
+            if current_section is not None:
+                st.divider()
+
+            st.markdown(
+                f"### {section}"
+            )
+
+            current_section = section
+
+        # Variables categóricas.
         if feature in categorical_features:
 
             options = categories.get(
@@ -237,19 +547,22 @@ with st.form("formulario_prediccion"):
                 st.stop()
 
             payload[feature] = st.selectbox(
-                label=feature,
+                label=label,
                 options=options,
+                help=help_text,
                 key=f"input_{feature}",
             )
 
-        # Este bloque se utilizará únicamente si el
-        # esquema contiene variables numéricas.
+        # Variables numéricas.
         else:
             payload[feature] = st.number_input(
-                label=feature,
+                label=label,
                 value=0.0,
+                help=help_text,
                 key=f"input_{feature}",
             )
+
+    st.divider()
 
     submitted = st.form_submit_button(
         "Evaluar estudiante",
