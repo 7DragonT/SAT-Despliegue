@@ -520,7 +520,6 @@ SECTION_ORDER = {
 # Formulario de predicción por pasos
 # ------------------------------------------------------------------
 
-# Lista ordenada de las cinco secciones.
 SECTIONS = [
     section
     for section, _
@@ -532,9 +531,12 @@ SECTIONS = [
 ]
 
 
-# Inicializar el paso actual.
 if "paso_formulario" not in st.session_state:
     st.session_state["paso_formulario"] = 0
+
+
+if "respuestas_formulario" not in st.session_state:
+    st.session_state["respuestas_formulario"] = {}
 
 
 total_steps = len(SECTIONS)
@@ -547,10 +549,6 @@ current_section = SECTIONS[
     current_step
 ]
 
-
-# ------------------------------------------------------------------
-# Encabezado e indicador de progreso
-# ------------------------------------------------------------------
 
 st.subheader("Formulario de evaluación")
 
@@ -567,7 +565,6 @@ st.caption(
 )
 
 
-# Obtener únicamente las variables del paso actual.
 current_features = [
     feature
     for feature in feature_order
@@ -585,10 +582,6 @@ if not current_features:
         "La sección actual no tiene variables configuradas."
     )
     st.stop()
-
-
-# La variable se activa únicamente en el último paso.
-submitted = False
 
 
 with st.form(
@@ -616,11 +609,16 @@ with st.form(
         )
 
         label = config["label"]
-        help_text = config.get(
-            "help"
+        help_text = config.get("help")
+
+        widget_key = f"input_{feature}"
+
+        saved_value = st.session_state[
+            "respuestas_formulario"
+        ].get(
+            feature
         )
 
-        # Variables categóricas.
         if feature in categorical_features:
 
             options = categories.get(
@@ -635,26 +633,38 @@ with st.form(
                 )
                 st.stop()
 
+            default_index = 0
+
+            if (
+                saved_value is not None
+                and saved_value in options
+            ):
+                default_index = options.index(
+                    saved_value
+                )
+
             st.selectbox(
                 label=label,
                 options=options,
+                index=default_index,
                 help=help_text,
-                key=f"input_{feature}",
+                key=widget_key,
             )
 
-        # Variables numéricas, si existieran.
         else:
+
+            numeric_default = (
+                float(saved_value)
+                if saved_value is not None
+                else 0.0
+            )
+
             st.number_input(
                 label=label,
-                value=0.0,
+                value=numeric_default,
                 help=help_text,
-                key=f"input_{feature}",
+                key=widget_key,
             )
-
-
-    # --------------------------------------------------------------
-    # Botones de navegación
-    # --------------------------------------------------------------
 
     left_column, right_column = st.columns(
         2
@@ -662,24 +672,20 @@ with st.form(
 
     with left_column:
 
-        previous_clicked = (
-            st.form_submit_button(
-                "Anterior",
-                use_container_width=True,
-                disabled=current_step == 0,
-            )
+        previous_clicked = st.form_submit_button(
+            "Anterior",
+            use_container_width=True,
+            disabled=current_step == 0,
         )
 
     with right_column:
 
         if current_step < total_steps - 1:
 
-            next_clicked = (
-                st.form_submit_button(
-                    "Siguiente",
-                    type="primary",
-                    use_container_width=True,
-                )
+            next_clicked = st.form_submit_button(
+                "Siguiente",
+                type="primary",
+                use_container_width=True,
             )
 
             evaluate_clicked = False
@@ -688,20 +694,39 @@ with st.form(
 
             next_clicked = False
 
-            evaluate_clicked = (
-                st.form_submit_button(
-                    "Evaluar estudiante",
-                    type="primary",
-                    use_container_width=True,
-                )
+            evaluate_clicked = st.form_submit_button(
+                "Evaluar estudiante",
+                type="primary",
+                use_container_width=True,
             )
 
 
-# ------------------------------------------------------------------
-# Navegación entre pasos
-# ------------------------------------------------------------------
+def guardar_respuestas_del_paso(
+    features: list[str],
+) -> None:
+    """
+    Guarda las respuestas del paso actual en un
+    diccionario independiente de los widgets.
+    """
+
+    for feature in features:
+
+        widget_key = f"input_{feature}"
+
+        if widget_key in st.session_state:
+
+            st.session_state[
+                "respuestas_formulario"
+            ][feature] = st.session_state[
+                widget_key
+            ]
+
 
 if previous_clicked:
+
+    guardar_respuestas_del_paso(
+        current_features
+    )
 
     st.session_state[
         "paso_formulario"
@@ -715,6 +740,10 @@ if previous_clicked:
 
 if next_clicked:
 
+    guardar_respuestas_del_paso(
+        current_features
+    )
+
     st.session_state[
         "paso_formulario"
     ] = min(
@@ -725,22 +754,27 @@ if next_clicked:
     st.rerun()
 
 
-# ------------------------------------------------------------------
-# Construcción final del payload
-# ------------------------------------------------------------------
-
 payload: dict[str, object] = {}
+submitted = False
+
 
 if evaluate_clicked:
 
-    missing_session_values = [
-        feature
-        for feature in feature_order
-        if f"input_{feature}"
-        not in st.session_state
+    guardar_respuestas_del_paso(
+        current_features
+    )
+
+    respuestas_guardadas = st.session_state[
+        "respuestas_formulario"
     ]
 
-    if missing_session_values:
+    missing_features = [
+        feature
+        for feature in feature_order
+        if feature not in respuestas_guardadas
+    ]
+
+    if missing_features:
 
         st.error(
             "Faltan campos por diligenciar. "
@@ -748,25 +782,20 @@ if evaluate_clicked:
         )
 
         st.code(
-            str(
-                missing_session_values
-            )
+            str(missing_features)
         )
 
         st.stop()
 
-
-    # Mantener exactamente los nombres y el orden
-    # que espera FastAPI.
     payload = {
-        feature: st.session_state[
-            f"input_{feature}"
+        feature: respuestas_guardadas[
+            feature
         ]
         for feature in feature_order
     }
 
     submitted = True
-
+    
 # ------------------------------------------------------------------
 # Solicitud de predicción
 # ------------------------------------------------------------------
