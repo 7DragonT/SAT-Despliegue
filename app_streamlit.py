@@ -515,36 +515,96 @@ SECTION_ORDER = {
     "Información adicional": 99,
 }
 
-feature_order_form = sorted(
-    feature_order,
-    key=lambda feature: SECTION_ORDER.get(
-        FIELD_CONFIG.get(
-            feature,
-            {"section": "Información adicional"},
-        )["section"],
-        99,
-    ),
+
+# ------------------------------------------------------------------
+# Formulario de predicción por pasos
+# ------------------------------------------------------------------
+
+# Lista ordenada de las cinco secciones.
+SECTIONS = [
+    section
+    for section, _
+    in sorted(
+        SECTION_ORDER.items(),
+        key=lambda item: item[1],
+    )
+    if section != "Información adicional"
+]
+
+
+# Inicializar el paso actual.
+if "paso_formulario" not in st.session_state:
+    st.session_state["paso_formulario"] = 0
+
+
+total_steps = len(SECTIONS)
+
+current_step = st.session_state[
+    "paso_formulario"
+]
+
+current_section = SECTIONS[
+    current_step
+]
+
+
+# ------------------------------------------------------------------
+# Encabezado e indicador de progreso
+# ------------------------------------------------------------------
+
+st.subheader("Formulario de evaluación")
+
+st.write(
+    f"**Paso {current_step + 1} de {total_steps}**"
+)
+
+st.progress(
+    (current_step + 1) / total_steps
+)
+
+st.caption(
+    current_section
 )
 
 
-# ------------------------------------------------------------------
-# Formulario de predicción
-# ------------------------------------------------------------------
+# Obtener únicamente las variables del paso actual.
+current_features = [
+    feature
+    for feature in feature_order
+    if FIELD_CONFIG.get(
+        feature,
+        {
+            "section": "Información adicional",
+        },
+    )["section"] == current_section
+]
 
-payload: dict[str, object] = {}
 
-with st.form("formulario_prediccion"):
+if not current_features:
+    st.error(
+        "La sección actual no tiene variables configuradas."
+    )
+    st.stop()
 
-    st.subheader("Formulario de evaluación")
 
-    st.info(
-        "Complete las cinco secciones utilizando la información "
-        "disponible del estudiante y de su hogar."
+# La variable se activa únicamente en el último paso.
+submitted = False
+
+
+with st.form(
+    key=f"formulario_paso_{current_step}",
+):
+
+    st.markdown(
+        f"### {current_section}"
     )
 
-    current_section = None
+    st.info(
+        "Complete los campos de esta sección antes "
+        "de continuar."
+    )
 
-    for feature in feature_order_form:
+    for feature in current_features:
 
         config = FIELD_CONFIG.get(
             feature,
@@ -555,21 +615,10 @@ with st.form("formulario_prediccion"):
             },
         )
 
-        section = config["section"]
         label = config["label"]
-        help_text = config.get("help")
-
-        # Mostrar un encabezado cuando comienza una nueva sección.
-        if section != current_section:
-
-            if current_section is not None:
-                st.divider()
-
-            st.markdown(
-                f"### {section}"
-            )
-
-            current_section = section
+        help_text = config.get(
+            "help"
+        )
 
         # Variables categóricas.
         if feature in categorical_features:
@@ -581,36 +630,142 @@ with st.form("formulario_prediccion"):
 
             if not options:
                 st.error(
-                    f"No se encontraron categorías "
-                    f"permitidas para la variable "
-                    f"'{feature}'."
+                    "No se encontraron categorías "
+                    f"permitidas para '{feature}'."
                 )
                 st.stop()
 
-            payload[feature] = st.selectbox(
+            st.selectbox(
                 label=label,
                 options=options,
                 help=help_text,
                 key=f"input_{feature}",
             )
 
-        # Variables numéricas.
+        # Variables numéricas, si existieran.
         else:
-            payload[feature] = st.number_input(
+            st.number_input(
                 label=label,
                 value=0.0,
                 help=help_text,
                 key=f"input_{feature}",
             )
 
-    st.divider()
 
-    submitted = st.form_submit_button(
-        "Evaluar estudiante",
-        type="primary",
-        use_container_width=True,
+    # --------------------------------------------------------------
+    # Botones de navegación
+    # --------------------------------------------------------------
+
+    left_column, right_column = st.columns(
+        2
     )
 
+    with left_column:
+
+        previous_clicked = (
+            st.form_submit_button(
+                "Anterior",
+                use_container_width=True,
+                disabled=current_step == 0,
+            )
+        )
+
+    with right_column:
+
+        if current_step < total_steps - 1:
+
+            next_clicked = (
+                st.form_submit_button(
+                    "Siguiente",
+                    type="primary",
+                    use_container_width=True,
+                )
+            )
+
+            evaluate_clicked = False
+
+        else:
+
+            next_clicked = False
+
+            evaluate_clicked = (
+                st.form_submit_button(
+                    "Evaluar estudiante",
+                    type="primary",
+                    use_container_width=True,
+                )
+            )
+
+
+# ------------------------------------------------------------------
+# Navegación entre pasos
+# ------------------------------------------------------------------
+
+if previous_clicked:
+
+    st.session_state[
+        "paso_formulario"
+    ] = max(
+        current_step - 1,
+        0,
+    )
+
+    st.rerun()
+
+
+if next_clicked:
+
+    st.session_state[
+        "paso_formulario"
+    ] = min(
+        current_step + 1,
+        total_steps - 1,
+    )
+
+    st.rerun()
+
+
+# ------------------------------------------------------------------
+# Construcción final del payload
+# ------------------------------------------------------------------
+
+payload: dict[str, object] = {}
+
+if evaluate_clicked:
+
+    missing_session_values = [
+        feature
+        for feature in feature_order
+        if f"input_{feature}"
+        not in st.session_state
+    ]
+
+    if missing_session_values:
+
+        st.error(
+            "Faltan campos por diligenciar. "
+            "Regrese a las secciones anteriores."
+        )
+
+        st.code(
+            str(
+                missing_session_values
+            )
+        )
+
+        st.stop()
+
+
+    # Mantener exactamente los nombres y el orden
+    # que espera FastAPI.
+    payload = {
+        feature: st.session_state[
+            f"input_{feature}"
+        ]
+        for feature in feature_order
+    }
+
+    submitted = True
 
 # ------------------------------------------------------------------
 # Solicitud de predicción
