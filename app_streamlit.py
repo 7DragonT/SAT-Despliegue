@@ -39,7 +39,7 @@ FIELD_CONFIG = {
         "section": "1. Información del establecimiento",
         "label": "¿En qué zona se ubica el establecimiento?",
         "help": (
-            "Seleccione si el establecimiento se encuentra"
+            "Seleccione si el establecimiento se encuentra "
             "en una zona urbana o rural."
         ),
     },
@@ -90,7 +90,7 @@ FIELD_CONFIG = {
         "label": "¿Cuánto tiempo dedica a la lectura por entretenimiento cada día?",
         "help": (
             "Indique el tiempo diario de lectura de libros, revistas u otros "
-            "materiales por hobbie."
+            "materiales como pasatiempo."
         ),
     },
 
@@ -130,7 +130,7 @@ FIELD_CONFIG = {
         "section": "3. Alimentación y condiciones del hogar",
         "label": "¿Con qué frecuencia el hogar consume carne, pescado o huevo?",
         "help": (
-            "Selecciona la frecuencia semanal con que consume estos "
+            "Seleccione la frecuencia semanal con que se consumen estos "
             "alimentos en el hogar."
         ),
     },
@@ -139,7 +139,7 @@ FIELD_CONFIG = {
         "section": "3. Alimentación y condiciones del hogar",
         "label": "¿Con qué frecuencia el hogar consume cereales, frutas o legumbres?",
         "help": (
-            "Selecciona la frecuencia semanal con que consume estos "
+            "Seleccione la frecuencia semanal con que se consumen estos "
             "alimentos en el hogar."
         ),
     },
@@ -148,7 +148,7 @@ FIELD_CONFIG = {
         "section": "3. Alimentación y condiciones del hogar",
         "label": "¿Con qué frecuencia el hogar consume leche o sus derivados?",
         "help": (
-            "Selecciona la frecuencia semanal con que consume estos "
+            "Seleccione la frecuencia semanal con que se consumen estos "
             "alimentos en el hogar."
         ),
     },
@@ -166,8 +166,8 @@ FIELD_CONFIG = {
         "section": "3. Alimentación y condiciones del hogar",
         "label": "¿Cuántas personas conforman el hogar?",
         "help": (
-            "Indica las personas que habitan en la vivienda "
-            "incluyendo el estudiante."
+            "Seleccione el número de personas que habitan en la vivienda, "
+            "incluyendo al estudiante."
         ),
     },
 
@@ -175,8 +175,8 @@ FIELD_CONFIG = {
         "section": "3. Alimentación y condiciones del hogar",
         "label": "¿Cómo considera que ha cambiado la situación económica del hogar?",
         "help": (
-            "Escoja como considera la situación económica actual en comparación "
-            "con la situación del periodo anterior."
+            "Seleccione si la situación económica del hogar ha mejorado, "
+            "empeorado o se mantiene igual frente al periodo anterior."
         ),
     },
 
@@ -230,88 +230,98 @@ FIELD_CONFIG = {
         "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿Cuál es el estrato económico de la vivienda?",
         "help": (
-            "Seleccione el estrato "
-            "que corresponda del estudiante."
+            "Seleccione el estrato socioeconómico de la vivienda."
         ),
     },
 
     "fami_numlibros": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿Cuántos libros hay aproximadamente en el hogar?",
         "help": (
-            "Marque los libros disponibles aproximados "
+            "Seleccione el número aproximado de libros disponibles "
             "en el hogar."
         ),
     },
 
     "fami_tieneautomovil": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿El hogar dispone de automóvil?",
         "help": (
-            "Seleccione la opción de disponibilidad " 
-            "de automóvil que corresponda.",
+            "Seleccione si el hogar dispone "
+            "de automóvil."
         ),
     },
 
     "fami_tienecomputador": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿El hogar dispone de computador?",
         "help": (
-            "Marque si dispone de de computadores de escritorio "
+            "Seleccione si el hogar dispone de computadores de escritorio "
             "o portátiles disponibles en el hogar."
         ),
     },
 
     "fami_tieneconsolavideojuegos": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿El hogar dispone de consola de videojuegos?",
-        "help": ( 
+        "help": (
             "Seleccione si el hogar del estudiante "
-            "dispone de consola.",
+            "dispone de consola de videojuegos."
         ),
     },
 
     "fami_tienehornomicroogas": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿El hogar dispone de horno microondas?",
         "help": "Seleccione si el hogar del estudiante "
         "dispone de horno microondas.",
     },
 
     "fami_tieneinternet": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿El hogar dispone de conexión a internet?",
         "help": (
-            "Disponible de internet habitualmente o "
-            "en la vivienda del estudiante."
+            "Seleccione si la vivienda dispone habitualmente "
+            "de conexión a internet."
         ),
     },
 
     "fami_tienelavadora": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿El hogar dispone de lavadora?",
         "help": "Seleccione si el hogar del estudiante "
         "dispone de lavadora.",
     },
 
     "fami_tienemotocicleta": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿El hogar dispone de motocicleta?",
-        "help": ( 
+        "help": (
             "Seleccione si el hogar del estudiante "
-            "dispone de Motocicleta.",
+            "dispone de motocicleta."
         ),
     },
 
     "fami_tieneserviciotv": {
-        "section": "5. Condiciones socioeconómicas y recursos del hogar",
+        "section": "5. Condiciones socioeconómicas y de recursos del hogar",
         "label": "¿El hogar dispone de servicio de televisión?",
         "help": (
-            "Indica si dispone de tv por cable, satélite "
+            "Seleccione si dispone de televisión por cable, satélite "
             "o servicios equivalentes en el hogar del estudiante."
         ),
     },
 }
+
+
+# Validar que los textos de ayuda sean cadenas válidas para Streamlit.
+for field_name, field_config in FIELD_CONFIG.items():
+    help_value = field_config.get("help")
+
+    if help_value is not None and not isinstance(help_value, str):
+        raise TypeError(
+            f"FIELD_CONFIG['{field_name}']['help'] debe ser texto, "
+            f"pero se recibió {type(help_value).__name__}."
+        )
 
 
 # ------------------------------------------------------------------
