@@ -37,7 +37,7 @@ FIELD_CONFIG = {
 
     "cole_area_ubicacion": {
         "section": "1. Información del establecimiento",
-        "label": "¿En qué zona se úbica el establecimiento?",
+        "label": "¿En qué zona se ubica el establecimiento?",
         "help": (
             "Seleccione si el establecimiento se encuentra"
             "en una zona urbana o rural."
@@ -99,7 +99,7 @@ FIELD_CONFIG = {
         "label": "¿Cuál es el género del estudiante?",
         "help": (
             "Seleccione la opción disponible "
-            "de genero."
+            "de género."
         ),
     },
 
@@ -114,7 +114,7 @@ FIELD_CONFIG = {
 
     "estu_tiporemuneracion": {
         "section": "2. Hábitos y condiciones del estudiante",
-        "label": "Si trabja, ¿que tipo de remuneración recibe el estudiante por su trabajo?",
+        "label": "Si trabaja, ¿qué tipo de remuneración recibe el estudiante por su trabajo?",
         "help": (
             "Indique si recibe pago en efectivo, en especie "
             "o mediante ambas modalidades."
@@ -231,7 +231,7 @@ FIELD_CONFIG = {
         "label": "¿Cuál es el estrato económico de la vivienda?",
         "help": (
             "Seleccione el estrato "
-            "que corresponda del esrudiante."
+            "que corresponda del estudiante."
         ),
     },
 
@@ -249,7 +249,7 @@ FIELD_CONFIG = {
         "label": "¿El hogar dispone de automóvil?",
         "help": (
             "Seleccione la opción de disponibilidad " 
-            "de automovil que corresponda.",
+            "de automóvil que corresponda.",
         ),
     },
 
@@ -493,6 +493,31 @@ st.success(
 
 
 # ------------------------------------------------------------------
+# Orden visual de las secciones
+# ------------------------------------------------------------------
+
+SECTION_ORDER = {
+    "1. Información del establecimiento": 1,
+    "2. Hábitos y condiciones del estudiante": 2,
+    "3. Alimentación y condiciones del hogar": 3,
+    "4. Educación y ocupación de los padres": 4,
+    "5. Condiciones socioeconómicas y de recursos del hogar": 5,
+    "Información adicional": 99,
+}
+
+feature_order_form = sorted(
+    feature_order,
+    key=lambda feature: SECTION_ORDER.get(
+        FIELD_CONFIG.get(
+            feature,
+            {"section": "Información adicional"},
+        )["section"],
+        99,
+    ),
+)
+
+
+# ------------------------------------------------------------------
 # Formulario de predicción
 # ------------------------------------------------------------------
 
@@ -509,7 +534,7 @@ with st.form("formulario_prediccion"):
 
     current_section = None
 
-    for feature in feature_order:
+    for feature in feature_order_form:
 
         config = FIELD_CONFIG.get(
             feature,
