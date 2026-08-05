@@ -247,8 +247,10 @@ FIELD_CONFIG = {
     "fami_tieneautomovil": {
         "section": "5. Condiciones socioeconómicas y recursos del hogar",
         "label": "¿El hogar dispone de automóvil?",
-        "help": "Seleccione la opción de disponibilidad " 
-        "de automovil que corresponda.",
+        "help": (
+            "Seleccione la opción de disponibilidad " 
+            "de automovil que corresponda.",
+        ),
     },
 
     "fami_tienecomputador": {
@@ -263,8 +265,10 @@ FIELD_CONFIG = {
     "fami_tieneconsolavideojuegos": {
         "section": "5. Condiciones socioeconómicas y recursos del hogar",
         "label": "¿El hogar dispone de consola de videojuegos?",
-        "help": "Seleccione si el hogar del estudiante "
-        "dispone de consola.",
+        "help": ( 
+            "Seleccione si el hogar del estudiante "
+            "dispone de consola.",
+        ),
     },
 
     "fami_tienehornomicroogas": {
@@ -293,8 +297,10 @@ FIELD_CONFIG = {
     "fami_tienemotocicleta": {
         "section": "5. Condiciones socioeconómicas y recursos del hogar",
         "label": "¿El hogar dispone de motocicleta?",
-        "help": "Seleccione si el hogar del estudiante "
-        "dispone de Motocicleta.",
+        "help": ( 
+            "Seleccione si el hogar del estudiante "
+            "dispone de Motocicleta.",
+        ),
     },
 
     "fami_tieneserviciotv": {
