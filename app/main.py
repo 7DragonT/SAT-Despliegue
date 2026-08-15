@@ -315,6 +315,91 @@ MENSAJES_AMIGABLES = {
     },
 }
 
+# ============================================================
+# Mensajes para aspectos que reducen la estimación de riesgo
+# ============================================================
+
+MENSAJES_FAVORABLES = {
+    "estu_dedicacioninternet": {
+        "dimension": "Uso del tiempo y conectividad",
+        "mensaje": (
+            "Las condiciones registradas de acceso y uso "
+            "de internet contribuyeron favorablemente al resultado."
+        ),
+    },
+
+    "estu_dedicacionlecturadiaria": {
+        "dimension": "Hábitos académicos",
+        "mensaje": (
+            "Los hábitos de lectura registrados contribuyeron "
+            "favorablemente al resultado."
+        ),
+    },
+
+    "estu_horassemanatrabaja": {
+        "dimension": "Disponibilidad de tiempo",
+        "mensaje": (
+            "La disponibilidad de tiempo registrada contribuyó "
+            "favorablemente al resultado."
+        ),
+    },
+
+    "fami_situacioneconomica": {
+        "dimension": "Estabilidad económica del hogar",
+        "mensaje": (
+            "La situación económica registrada contribuyó "
+            "favorablemente al resultado."
+        ),
+    },
+
+    "fami_educacionmadre": {
+        "dimension": "Acompañamiento académico familiar",
+        "mensaje": (
+            "Las condiciones registradas de acompañamiento familiar "
+            "contribuyeron favorablemente al resultado."
+        ),
+    },
+
+    "fami_educacionpadre": {
+        "dimension": "Acompañamiento académico familiar",
+        "mensaje": (
+            "Las condiciones registradas de acompañamiento familiar "
+            "contribuyeron favorablemente al resultado."
+        ),
+    },
+
+    "fami_numlibros": {
+        "dimension": "Recursos culturales y de lectura",
+        "mensaje": (
+            "La disponibilidad registrada de materiales de lectura "
+            "contribuyó favorablemente al resultado."
+        ),
+    },
+
+    "fami_tienecomputador": {
+        "dimension": "Recursos para el aprendizaje",
+        "mensaje": (
+            "La disponibilidad registrada de recursos tecnológicos "
+            "contribuyó favorablemente al resultado."
+        ),
+    },
+
+    "fami_tieneinternet": {
+        "dimension": "Conectividad para el aprendizaje",
+        "mensaje": (
+            "Las condiciones registradas de conectividad contribuyeron "
+            "favorablemente al resultado."
+        ),
+    },
+
+    "fami_personashogar": {
+        "dimension": "Condiciones para el estudio en el hogar",
+        "mensaje": (
+            "Las condiciones registradas del hogar contribuyeron "
+            "favorablemente al resultado."
+        ),
+    },
+}
 
 def obtener_factores_visibles(
     input_frame: pd.DataFrame,
@@ -464,6 +549,151 @@ def obtener_factores_visibles(
         )
 
     return factores
+
+def obtener_factores_favorables(
+    input_frame: pd.DataFrame,
+    max_factores: int = 3,
+) -> list[dict[str, str]]:
+    """
+    Selecciona aspectos que redujeron la estimación local
+    de riesgo para el registro evaluado.
+
+    No devuelve nombres técnicos, valores originales
+    ni contribuciones numéricas.
+    """
+
+    transformed_names, local_values = (
+        calcular_contribuciones_locales(
+            input_frame
+        )
+    )
+
+    allowed_features = set(
+        MENSAJES_FAVORABLES
+    )
+
+    blocked_features = set(
+        policy.get(
+            "exclude_features",
+            policy.get(
+                "blocked_features",
+                [],
+            ),
+        )
+    )
+
+    blocked_prefixes = tuple(
+        policy.get(
+            "blocked_prefixes",
+            [],
+        )
+    )
+
+    grouped = defaultdict(float)
+
+    for transformed_name, contribution in zip(
+        transformed_names,
+        local_values,
+        strict=True,
+    ):
+
+        contribution = float(
+            contribution
+        )
+
+        # Solo contribuciones que reducen
+        # la estimación de riesgo.
+        if contribution >= 0:
+            continue
+
+        mapping = FEATURE_LOOKUP.get(
+            transformed_name
+        )
+
+        if mapping is None:
+            continue
+
+        original_feature = mapping.get(
+            "original_feature"
+        )
+
+        if not original_feature:
+            continue
+
+        if not mapping.get(
+            "show_to_user",
+            False,
+        ):
+            continue
+
+        if mapping.get(
+            "sensitive",
+            False,
+        ):
+            continue
+
+        if original_feature in blocked_features:
+            continue
+
+        if (
+            blocked_prefixes
+            and original_feature.startswith(
+                blocked_prefixes
+            )
+        ):
+            continue
+
+        if original_feature not in allowed_features:
+            continue
+
+        message_config = MENSAJES_FAVORABLES.get(
+            original_feature
+        )
+
+        if message_config is None:
+            continue
+
+        dimension = message_config[
+            "dimension"
+        ]
+
+        grouped[dimension] += abs(
+            contribution
+        )
+
+    ordered_dimensions = sorted(
+        grouped.items(),
+        key=lambda item: item[1],
+        reverse=True,
+    )[:max_factores]
+
+    factores_favorables = []
+
+    for dimension, _ in ordered_dimensions:
+
+        matching_config = next(
+            (
+                config
+                for config
+                in MENSAJES_FAVORABLES.values()
+                if config["dimension"] == dimension
+            ),
+            None,
+        )
+
+        if matching_config is None:
+            continue
+
+        factores_favorables.append(
+            {
+                "dimension": dimension,
+                "mensaje": matching_config[
+                    "mensaje"
+                ],
+            }
+        )
+
+    return factores_favorables
 
 
 app = FastAPI(
@@ -676,6 +906,26 @@ def predecir(payload: dict[str, Any]) -> dict:
             if is_risk
             else []
         )
+
+    try:
+        factores_favorables = (
+            obtener_factores_favorables(
+                input_frame=input_frame,
+                max_factores=3,
+            )
+            if not is_risk
+            else []
+        )
+
+except Exception as exc:
+
+    print(
+        "Error al generar factores favorables:",
+        repr(exc),
+    )
+
+    factores_favorables = []
+
     except Exception as exc:
         # La predicción principal no debe fallar si falla
         # únicamente la capa de explicabilidad.
@@ -702,6 +952,7 @@ def predecir(payload: dict[str, Any]) -> dict:
         "S0-XGBoost",
     ),
     "factores": factores,
+    "factores_favorables": factores_favorables,
     "advertencia": (
         "Resultado orientativo generado por un "
         "modelo estadístico. No constituye un diagnóstico."
