@@ -7,6 +7,16 @@ import os
 import requests
 import streamlit as st
 
+from datetime import datetime
+from io import BytesIO
+
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import (
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+)
 
 # ------------------------------------------------------------------
 # Configuración general
@@ -25,6 +35,251 @@ st.set_page_config(
     page_icon="📘",
     layout="centered",
 )
+
+#Generar informe PDF
+def generar_informe_pdf(result: dict) -> bytes:
+    """
+    Genera en memoria un informe PDF con el resultado
+    individual del Sistema de Alerta Temprana.
+    """
+
+    buffer = BytesIO()
+
+    documento = SimpleDocTemplate(
+        buffer,
+        pagesize=letter,
+        rightMargin=50,
+        leftMargin=50,
+        topMargin=50,
+        bottomMargin=50,
+    )
+
+    estilos = getSampleStyleSheet()
+    contenido = []
+
+    # Título
+    contenido.append(
+        Paragraph(
+            "Sistema de Alerta Temprana",
+            estilos["Title"],
+        )
+    )
+
+    contenido.append(
+        Spacer(1, 12)
+    )
+
+    contenido.append(
+        Paragraph(
+            "Informe individual de evaluación",
+            estilos["Heading2"],
+        )
+    )
+
+    contenido.append(
+        Spacer(1, 12)
+    )
+
+    # Fecha
+    fecha = datetime.now().strftime(
+        "%d/%m/%Y %H:%M"
+    )
+
+    contenido.append(
+        Paragraph(
+            f"<b>Fecha de evaluación:</b> {fecha}",
+            estilos["BodyText"],
+        )
+    )
+
+    contenido.append(
+        Spacer(1, 10)
+    )
+
+    # Resultado
+    resultado = result.get(
+        "resultado",
+        "No disponible",
+    )
+
+    probabilidad = float(
+        result.get(
+            "probabilidad_estimada",
+            0,
+        )
+    )
+
+    contenido.append(
+        Paragraph(
+            f"<b>Resultado:</b> {resultado}",
+            estilos["BodyText"],
+        )
+    )
+
+    contenido.append(
+        Paragraph(
+            f"<b>Probabilidad estimada:</b> "
+            f"{probabilidad:.1%}",
+            estilos["BodyText"],
+        )
+    )
+
+    contenido.append(
+        Spacer(1, 15)
+    )
+
+    # ------------------------------------------------------
+    # Caso con riesgo
+    # ------------------------------------------------------
+
+    factores = result.get(
+        "factores",
+        [],
+    )
+
+    if factores:
+
+        contenido.append(
+            Paragraph(
+                "Aspectos que podrían requerir acompañamiento",
+                estilos["Heading2"],
+            )
+        )
+
+        for factor in factores:
+
+            dimension = factor.get(
+                "dimension",
+                "Aspecto relevante",
+            )
+
+            mensaje = factor.get(
+                "mensaje",
+                "",
+            )
+
+            contenido.append(
+                Paragraph(
+                    f"<b>{dimension}</b><br/>{mensaje}",
+                    estilos["BodyText"],
+                )
+            )
+
+            contenido.append(
+                Spacer(1, 8)
+            )
+
+    # ------------------------------------------------------
+    # Caso sin riesgo
+    # ------------------------------------------------------
+
+    factores_favorables = result.get(
+        "factores_favorables",
+        [],
+    )
+
+    if factores_favorables:
+
+        contenido.append(
+            Paragraph(
+                "Aspectos que contribuyeron favorablemente",
+                estilos["Heading2"],
+            )
+        )
+
+        for factor in factores_favorables:
+
+            dimension = factor.get(
+                "dimension",
+                "Aspecto favorable",
+            )
+
+            mensaje = factor.get(
+                "mensaje",
+                "",
+            )
+
+            contenido.append(
+                Paragraph(
+                    f"<b>{dimension}</b><br/>{mensaje}",
+                    estilos["BodyText"],
+                )
+            )
+
+            contenido.append(
+                Spacer(1, 8)
+            )
+
+        contenido.append(
+            Paragraph(
+                "Recomendaciones de mantenimiento",
+                estilos["Heading2"],
+            )
+        )
+
+        recomendaciones = [
+            (
+                "Mantener los hábitos y condiciones educativas "
+                "favorables identificados."
+            ),
+            (
+                "Continuar con el seguimiento académico periódico."
+            ),
+            (
+                "Realizar una nueva evaluación si cambian las "
+                "condiciones del estudiante o del hogar."
+            ),
+        ]
+
+        for recomendacion in recomendaciones:
+
+            contenido.append(
+                Paragraph(
+                    f"• {recomendacion}",
+                    estilos["BodyText"],
+                )
+            )
+
+            contenido.append(
+                Spacer(1, 5)
+            )
+
+    # ------------------------------------------------------
+    # Advertencia
+    # ------------------------------------------------------
+
+    contenido.append(
+        Spacer(1, 15)
+    )
+
+    advertencia = result.get(
+        "advertencia",
+        (
+            "Resultado orientativo generado por un modelo "
+            "estadístico. No constituye un diagnóstico."
+        ),
+    )
+
+    contenido.append(
+        Paragraph(
+            "<b>Advertencia</b>",
+            estilos["Heading3"],
+        )
+    )
+
+    contenido.append(
+        Paragraph(
+            advertencia,
+            estilos["BodyText"],
+        )
+    )
+
+    documento.build(contenido)
+
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    return pdf
 
 # ------------------------------------------------------------------
 # Configuración visual de los campos
@@ -999,4 +1254,24 @@ if submitted:
 
     st.warning(
         result["advertencia"]
+    )
+
+    # ----------------------------------------------------------
+    # Descarga del informe PDF
+    # ----------------------------------------------------------
+
+    pdf = generar_informe_pdf(
+        result
+    )
+
+    fecha_archivo = datetime.now().strftime(
+        "%Y%m%d_%H%M"
+    )
+
+    st.download_button(
+        label="📄 Descargar informe PDF",
+        data=pdf,
+        file_name=f"informe_sat_{fecha_archivo}.pdf",
+        mime="application/pdf",
+        use_container_width=True,
     )
