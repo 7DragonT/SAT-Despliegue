@@ -896,8 +896,7 @@ if submitted:
             f"{result['probabilidad_estimada']:.1%}"
         ),
     )
-
-
+    
     factores = result.get(
         "factores",
         [],
@@ -925,6 +924,78 @@ if submitted:
                 f"{mensaje}"
             )
 
+
+    # --------------------------------------------------------------
+    # Aspectos favorables para casos sin riesgo
+    # --------------------------------------------------------------
+
+    factores_favorables = result.get(
+        "factores_favorables",
+        [],
+    )
+
+
+    if not result.get(
+        "riesgo",
+        False,
+    ):
+
+        if factores_favorables:
+
+            st.markdown(
+                "### Aspectos que contribuyeron favorablemente"
+            )
+
+            for factor in factores_favorables:
+
+                dimension = factor.get(
+                    "dimension",
+                    "Aspecto favorable",
+                )
+
+                mensaje = factor.get(
+                    "mensaje",
+                    (
+                        "Este aspecto contribuyó "
+                        "favorablemente al resultado."
+                    ),
+                )
+
+                st.markdown(
+                    f"**{dimension}**  \n"
+                    f"{mensaje}"
+                )
+
+        else:
+
+            st.info(
+                "No se identificaron aspectos favorables "
+                "visibles suficientes para presentar una "
+                "explicación individual."
+            )
+
+
+        st.markdown(
+            "### Recomendaciones de mantenimiento"
+        )
+
+        st.markdown(
+            "- Mantener los hábitos y condiciones educativas "
+            "favorables identificadas.\n"
+            "- Continuar con el seguimiento académico periódico.\n"
+            "- Realizar una nueva evaluación si cambian las "
+            "condiciones del estudiante o del hogar."
+        )
+
+        st.info(
+            "La clasificación sin riesgo no garantiza la "
+            "ausencia de futuras dificultades académicas."
+        )
+
+
+    # --------------------------------------------------------------
+    # Advertencia general
+    # --------------------------------------------------------------
 
     st.warning(
         result["advertencia"]
