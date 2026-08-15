@@ -559,7 +559,10 @@ def obtener_factores_favorables(
     de riesgo para el registro evaluado.
 
     No devuelve nombres técnicos, valores originales
-    ni contribuciones numéricas.
+    ni contribuciones numéricas al usuario.
+
+    Incluye trazabilidad en logs para diagnosticar
+    por qué ciertos factores favorables son descartados.
     """
 
     transformed_names, local_values = (
@@ -591,11 +594,32 @@ def obtener_factores_favorables(
 
     grouped = defaultdict(float)
 
+    # ----------------------------------------------------------
+    # Contadores de diagnóstico
+    # ----------------------------------------------------------
+
+    diagnostico = {
+        "total_transformadas": 0,
+        "contribuciones_negativas": 0,
+        "sin_mapping": 0,
+        "sin_original_feature": 0,
+        "no_visible": 0,
+        "sensible": 0,
+        "bloqueada": 0,
+        "prefijo_bloqueado": 0,
+        "no_autorizada": 0,
+        "sin_mensaje": 0,
+        "aceptadas": 0,
+    }
+
+
     for transformed_name, contribution in zip(
         transformed_names,
         local_values,
         strict=True,
     ):
+
+        diagnostico["total_transformadas"] += 1
 
         contribution = float(
             contribution
@@ -606,34 +630,59 @@ def obtener_factores_favorables(
         if contribution >= 0:
             continue
 
+        diagnostico[
+            "contribuciones_negativas"
+        ] += 1
+
+
         mapping = FEATURE_LOOKUP.get(
             transformed_name
         )
 
         if mapping is None:
+            diagnostico[
+                "sin_mapping"
+            ] += 1
             continue
+
 
         original_feature = mapping.get(
             "original_feature"
         )
 
         if not original_feature:
+            diagnostico[
+                "sin_original_feature"
+            ] += 1
             continue
+
 
         if not mapping.get(
             "show_to_user",
             False,
         ):
+            diagnostico[
+                "no_visible"
+            ] += 1
             continue
+
 
         if mapping.get(
             "sensitive",
             False,
         ):
+            diagnostico[
+                "sensible"
+            ] += 1
             continue
 
+
         if original_feature in blocked_features:
+            diagnostico[
+                "bloqueada"
+            ] += 1
             continue
+
 
         if (
             blocked_prefixes
@@ -641,17 +690,29 @@ def obtener_factores_favorables(
                 blocked_prefixes
             )
         ):
+            diagnostico[
+                "prefijo_bloqueado"
+            ] += 1
             continue
 
+
         if original_feature not in allowed_features:
+            diagnostico[
+                "no_autorizada"
+            ] += 1
             continue
+
 
         message_config = MENSAJES_FAVORABLES.get(
             original_feature
         )
 
         if message_config is None:
+            diagnostico[
+                "sin_mensaje"
+            ] += 1
             continue
+
 
         dimension = message_config[
             "dimension"
@@ -661,13 +722,24 @@ def obtener_factores_favorables(
             contribution
         )
 
+        diagnostico[
+            "aceptadas"
+        ] += 1
+
+
+    # ----------------------------------------------------------
+    # Ordenar dimensiones favorables por magnitud
+    # ----------------------------------------------------------
+
     ordered_dimensions = sorted(
         grouped.items(),
         key=lambda item: item[1],
         reverse=True,
     )[:max_factores]
 
+
     factores_favorables = []
+
 
     for dimension, _ in ordered_dimensions:
 
@@ -684,6 +756,7 @@ def obtener_factores_favorables(
         if matching_config is None:
             continue
 
+
         factores_favorables.append(
             {
                 "dimension": dimension,
@@ -693,8 +766,28 @@ def obtener_factores_favorables(
             }
         )
 
-    return factores_favorables
 
+    # ----------------------------------------------------------
+    # Diagnóstico en logs de Render
+    # ----------------------------------------------------------
+
+    print(
+        "DIAGNOSTICO_FACTORES_FAVORABLES:",
+        diagnostico,
+    )
+
+    print(
+        "DIMENSIONES_FAVORABLES_AGRUPADAS:",
+        dict(grouped),
+    )
+
+    print(
+        "FACTORES_FAVORABLES_FINALES:",
+        factores_favorables,
+    )
+
+
+    return factores_favorables
 
 app = FastAPI(
     title="SAT Riesgo Educativo",
