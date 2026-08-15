@@ -37,10 +37,21 @@ st.set_page_config(
 )
 
 #Generar informe PDF
-def generar_informe_pdf(result: dict) -> bytes:
+def generar_informe_pdf(
+    result: dict,
+    respuestas: dict,
+) -> bytes:
     """
     Genera en memoria un informe PDF con el resultado
     individual del Sistema de Alerta Temprana.
+
+    Incluye:
+    - resultado;
+    - probabilidad estimada;
+    - factores de acompañamiento o favorables;
+    - recomendaciones;
+    - respuestas registradas;
+    - advertencia de uso.
     """
 
     buffer = BytesIO()
@@ -57,7 +68,10 @@ def generar_informe_pdf(result: dict) -> bytes:
     estilos = getSampleStyleSheet()
     contenido = []
 
+    # ------------------------------------------------------
     # Título
+    # ------------------------------------------------------
+
     contenido.append(
         Paragraph(
             "Sistema de Alerta Temprana",
@@ -80,7 +94,10 @@ def generar_informe_pdf(result: dict) -> bytes:
         Spacer(1, 12)
     )
 
+    # ------------------------------------------------------
     # Fecha
+    # ------------------------------------------------------
+
     fecha = datetime.now().strftime(
         "%d/%m/%Y %H:%M"
     )
@@ -96,7 +113,10 @@ def generar_informe_pdf(result: dict) -> bytes:
         Spacer(1, 10)
     )
 
+    # ------------------------------------------------------
     # Resultado
+    # ------------------------------------------------------
+
     resultado = result.get(
         "resultado",
         "No disponible",
@@ -124,6 +144,24 @@ def generar_informe_pdf(result: dict) -> bytes:
         )
     )
 
+    # Mostrar umbral si viene en la respuesta.
+    if "umbral" in result:
+
+        umbral = float(
+            result.get(
+                "umbral",
+                0,
+            )
+        )
+
+        contenido.append(
+            Paragraph(
+                f"<b>Umbral operativo:</b> "
+                f"{umbral:.1%}",
+                estilos["BodyText"],
+            )
+        )
+
     contenido.append(
         Spacer(1, 15)
     )
@@ -144,6 +182,10 @@ def generar_informe_pdf(result: dict) -> bytes:
                 "Aspectos que podrían requerir acompañamiento",
                 estilos["Heading2"],
             )
+        )
+
+        contenido.append(
+            Spacer(1, 6)
         )
 
         for factor in factores:
@@ -187,6 +229,10 @@ def generar_informe_pdf(result: dict) -> bytes:
             )
         )
 
+        contenido.append(
+            Spacer(1, 6)
+        )
+
         for factor in factores_favorables:
 
             dimension = factor.get(
@@ -211,10 +257,18 @@ def generar_informe_pdf(result: dict) -> bytes:
             )
 
         contenido.append(
+            Spacer(1, 5)
+        )
+
+        contenido.append(
             Paragraph(
                 "Recomendaciones de mantenimiento",
                 estilos["Heading2"],
             )
+        )
+
+        contenido.append(
+            Spacer(1, 6)
         )
 
         recomendaciones = [
@@ -245,6 +299,72 @@ def generar_informe_pdf(result: dict) -> bytes:
             )
 
     # ------------------------------------------------------
+    # Respuestas registradas
+    # ------------------------------------------------------
+
+    contenido.append(
+        Spacer(1, 15)
+    )
+
+    contenido.append(
+        Paragraph(
+            "Respuestas registradas",
+            estilos["Heading2"],
+        )
+    )
+
+    contenido.append(
+        Spacer(1, 8)
+    )
+
+    # Se recorre feature_order si está disponible,
+    # para conservar el orden lógico del formulario.
+    respuestas_ordenadas = (
+        feature_order
+        if "feature_order" in globals()
+        else respuestas.keys()
+    )
+
+    for feature in respuestas_ordenadas:
+
+        if feature not in respuestas:
+            continue
+
+        valor = respuestas[
+            feature
+        ]
+
+        config = FIELD_CONFIG.get(
+            feature,
+            {
+                "label": feature,
+            },
+        )
+
+        pregunta = config.get(
+            "label",
+            feature,
+        )
+
+        # Evitar mostrar None como texto.
+        valor_mostrado = (
+            "Sin dato"
+            if valor is None
+            else str(valor)
+        )
+
+        contenido.append(
+            Paragraph(
+                f"<b>{pregunta}</b><br/>{valor_mostrado}",
+                estilos["BodyText"],
+            )
+        )
+
+        contenido.append(
+            Spacer(1, 7)
+        )
+
+    # ------------------------------------------------------
     # Advertencia
     # ------------------------------------------------------
 
@@ -262,9 +382,13 @@ def generar_informe_pdf(result: dict) -> bytes:
 
     contenido.append(
         Paragraph(
-            "<b>Advertencia</b>",
-            estilos["Heading3"],
+            "Advertencia",
+            estilos["Heading2"],
         )
+    )
+
+    contenido.append(
+        Spacer(1, 6)
     )
 
     contenido.append(
@@ -274,9 +398,32 @@ def generar_informe_pdf(result: dict) -> bytes:
         )
     )
 
-    documento.build(contenido)
+    contenido.append(
+        Spacer(1, 8)
+    )
+
+    contenido.append(
+        Paragraph(
+            (
+                "Este informe constituye una herramienta de apoyo "
+                "para el acompañamiento educativo y no debe utilizarse "
+                "como diagnóstico, sanción o criterio automático para "
+                "tomar decisiones sobre el estudiante."
+            ),
+            estilos["BodyText"],
+        )
+    )
+
+    # ------------------------------------------------------
+    # Construcción final del PDF
+    # ------------------------------------------------------
+
+    documento.build(
+        contenido
+    )
 
     pdf = buffer.getvalue()
+
     buffer.close()
 
     return pdf
