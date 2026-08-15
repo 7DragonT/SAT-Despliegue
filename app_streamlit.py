@@ -46,9 +46,12 @@ def generar_informe_pdf(
     individual del Sistema de Alerta Temprana.
 
     Incluye:
+    - fecha de evaluación;
     - resultado;
     - probabilidad estimada;
-    - factores de acompañamiento o favorables;
+    - umbral operativo, si está disponible;
+    - factores de acompañamiento;
+    - factores favorables;
     - recomendaciones;
     - respuestas registradas;
     - advertencia de uso.
@@ -80,7 +83,10 @@ def generar_informe_pdf(
     )
 
     contenido.append(
-        Spacer(1, 12)
+        Spacer(
+            1,
+            12,
+        )
     )
 
     contenido.append(
@@ -91,7 +97,10 @@ def generar_informe_pdf(
     )
 
     contenido.append(
-        Spacer(1, 12)
+        Spacer(
+            1,
+            12,
+        )
     )
 
     # ------------------------------------------------------
@@ -110,7 +119,10 @@ def generar_informe_pdf(
     )
 
     contenido.append(
-        Spacer(1, 10)
+        Spacer(
+            1,
+            10,
+        )
     )
 
     # ------------------------------------------------------
@@ -144,26 +156,32 @@ def generar_informe_pdf(
         )
     )
 
-    # Mostrar umbral si viene en la respuesta.
     if "umbral" in result:
 
-        umbral = float(
-            result.get(
-                "umbral",
-                0,
+        try:
+            umbral = float(
+                result.get(
+                    "umbral",
+                    0,
+                )
             )
-        )
 
-        contenido.append(
-            Paragraph(
-                f"<b>Umbral operativo:</b> "
-                f"{umbral:.1%}",
-                estilos["BodyText"],
+            contenido.append(
+                Paragraph(
+                    f"<b>Umbral operativo:</b> "
+                    f"{umbral:.1%}",
+                    estilos["BodyText"],
+                )
             )
-        )
+
+        except (TypeError, ValueError):
+            pass
 
     contenido.append(
-        Spacer(1, 15)
+        Spacer(
+            1,
+            15,
+        )
     )
 
     # ------------------------------------------------------
@@ -185,7 +203,10 @@ def generar_informe_pdf(
         )
 
         contenido.append(
-            Spacer(1, 6)
+            Spacer(
+                1,
+                6,
+            )
         )
 
         for factor in factores:
@@ -208,7 +229,10 @@ def generar_informe_pdf(
             )
 
             contenido.append(
-                Spacer(1, 8)
+                Spacer(
+                    1,
+                    8,
+                )
             )
 
     # ------------------------------------------------------
@@ -230,7 +254,10 @@ def generar_informe_pdf(
         )
 
         contenido.append(
-            Spacer(1, 6)
+            Spacer(
+                1,
+                6,
+            )
         )
 
         for factor in factores_favorables:
@@ -253,11 +280,17 @@ def generar_informe_pdf(
             )
 
             contenido.append(
-                Spacer(1, 8)
+                Spacer(
+                    1,
+                    8,
+                )
             )
 
         contenido.append(
-            Spacer(1, 5)
+            Spacer(
+                1,
+                6,
+            )
         )
 
         contenido.append(
@@ -268,7 +301,10 @@ def generar_informe_pdf(
         )
 
         contenido.append(
-            Spacer(1, 6)
+            Spacer(
+                1,
+                6,
+            )
         )
 
         recomendaciones = [
@@ -295,7 +331,10 @@ def generar_informe_pdf(
             )
 
             contenido.append(
-                Spacer(1, 5)
+                Spacer(
+                    1,
+                    5,
+                )
             )
 
     # ------------------------------------------------------
@@ -303,7 +342,10 @@ def generar_informe_pdf(
     # ------------------------------------------------------
 
     contenido.append(
-        Spacer(1, 15)
+        Spacer(
+            1,
+            15,
+        )
     )
 
     contenido.append(
@@ -314,25 +356,29 @@ def generar_informe_pdf(
     )
 
     contenido.append(
-        Spacer(1, 8)
+        Spacer(
+            1,
+            8,
+        )
     )
 
-    # Se recorre feature_order si está disponible,
-    # para conservar el orden lógico del formulario.
-    respuestas_ordenadas = (
-        feature_order
-        if "feature_order" in globals()
-        else respuestas.keys()
-    )
+    # Mantener el orden definido por feature_order
+    # cuando esté disponible.
+    if "feature_order" in globals():
+        orden_respuestas = feature_order
+    else:
+        orden_respuestas = list(
+            respuestas.keys()
+        )
 
-    for feature in respuestas_ordenadas:
+    for feature in orden_respuestas:
 
         if feature not in respuestas:
             continue
 
-        valor = respuestas[
+        valor = respuestas.get(
             feature
-        ]
+        )
 
         config = FIELD_CONFIG.get(
             feature,
@@ -346,12 +392,12 @@ def generar_informe_pdf(
             feature,
         )
 
-        # Evitar mostrar None como texto.
-        valor_mostrado = (
-            "Sin dato"
-            if valor is None
-            else str(valor)
-        )
+        if valor is None:
+            valor_mostrado = "Sin dato"
+        else:
+            valor_mostrado = str(
+                valor
+            )
 
         contenido.append(
             Paragraph(
@@ -361,7 +407,10 @@ def generar_informe_pdf(
         )
 
         contenido.append(
-            Spacer(1, 7)
+            Spacer(
+                1,
+                7,
+            )
         )
 
     # ------------------------------------------------------
@@ -369,7 +418,24 @@ def generar_informe_pdf(
     # ------------------------------------------------------
 
     contenido.append(
-        Spacer(1, 15)
+        Spacer(
+            1,
+            15,
+        )
+    )
+
+    contenido.append(
+        Paragraph(
+            "Advertencia",
+            estilos["Heading2"],
+        )
+    )
+
+    contenido.append(
+        Spacer(
+            1,
+            6,
+        )
     )
 
     advertencia = result.get(
@@ -382,24 +448,16 @@ def generar_informe_pdf(
 
     contenido.append(
         Paragraph(
-            "Advertencia",
-            estilos["Heading2"],
-        )
-    )
-
-    contenido.append(
-        Spacer(1, 6)
-    )
-
-    contenido.append(
-        Paragraph(
             advertencia,
             estilos["BodyText"],
         )
     )
 
     contenido.append(
-        Spacer(1, 8)
+        Spacer(
+            1,
+            8,
+        )
     )
 
     contenido.append(
@@ -415,7 +473,7 @@ def generar_informe_pdf(
     )
 
     # ------------------------------------------------------
-    # Construcción final del PDF
+    # Construcción final
     # ------------------------------------------------------
 
     documento.build(
