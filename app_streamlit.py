@@ -421,8 +421,7 @@ def cargar_esquema() -> dict:
     response.raise_for_status()
 
     return response.json()
-    st.write("Respuesta completa de FastAPI:")
-    st.json(result)
+
 
 try:
     schema = cargar_esquema()
