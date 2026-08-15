@@ -1464,9 +1464,22 @@ if submitted:
     # ----------------------------------------------------------
     # Descarga del informe PDF
     # ----------------------------------------------------------
+    # ----------------------------------------------------------
+    # Preparar respuestas para el informe PDF
+    # ----------------------------------------------------------
+
+    respuestas_pdf = st.session_state.get(
+        "respuestas_formulario",
+        payload,
+    )
+
+    # ----------------------------------------------------------
+    # Generar informe PDF
+    # ----------------------------------------------------------
 
     pdf = generar_informe_pdf(
-        result
+        result=result,
+        respuestas=respuestas_pdf,
     )
 
     fecha_archivo = datetime.now().strftime(
@@ -1476,7 +1489,9 @@ if submitted:
     st.download_button(
         label="📄 Descargar informe PDF",
         data=pdf,
-        file_name=f"informe_sat_{fecha_archivo}.pdf",
+        file_name=(
+            f"informe_sat_{fecha_archivo}.pdf"
+        ),
         mime="application/pdf",
         use_container_width=True,
     )
