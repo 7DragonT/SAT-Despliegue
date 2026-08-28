@@ -1301,6 +1301,27 @@ else:
         )
 
 # ------------------------------------------------------------------
+# Mostrar resultados de la carga masiva
+# ------------------------------------------------------------------
+
+if "resultados_masivos" in st.session_state:
+
+    resultados_masivos = st.session_state[
+        "resultados_masivos"
+    ]
+
+    st.divider()
+
+    st.subheader(
+        "Resultados de la carga masiva"
+    )
+
+    st.dataframe(
+        resultados_masivos,
+        use_container_width=True,
+    )
+
+# ------------------------------------------------------------------
 # Orden visual de las secciones
 # ------------------------------------------------------------------
 
