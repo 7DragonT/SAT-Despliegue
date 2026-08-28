@@ -1094,6 +1094,35 @@ st.success(
     f"{schema['number_of_features']} variables."
 )
 
+# ------------------------------------------------------------------
+# Descarga de plantilla para carga masiva
+# ------------------------------------------------------------------
+
+st.subheader("Carga masiva de estudiantes")
+
+st.write(
+    "Descargue la plantilla CSV, complete la información "
+    "de los estudiantes y posteriormente cargue el archivo "
+    "para realizar la evaluación masiva."
+)
+
+plantilla = crear_plantilla_csv(
+    feature_order=feature_order,
+    categories=categories,
+)
+
+plantilla_csv = plantilla.to_csv(
+    index=False,
+    encoding="utf-8-sig",
+)
+
+st.download_button(
+    label="📥 Descargar plantilla CSV",
+    data=plantilla_csv,
+    file_name="plantilla_estudiantes_SAT.csv",
+    mime="text/csv",
+    use_container_width=True,
+)
 
 # ------------------------------------------------------------------
 # Orden visual de las secciones
