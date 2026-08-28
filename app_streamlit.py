@@ -1044,6 +1044,43 @@ def validar_csv(
         len(errores) == 0,
         errores,
     )
+
+# ------------------------------------------------------------------
+# Generación de plantilla CSV
+# ------------------------------------------------------------------
+
+def crear_plantilla_csv(
+    feature_order: list[str],
+    categories: dict,
+) -> pd.DataFrame:
+    """
+    Genera una plantilla CSV con las variables requeridas
+    por el modelo.
+
+    Se utiliza la primera categoría permitida como ejemplo
+    para cada variable categórica.
+    """
+
+    ejemplo = {}
+
+    for feature in feature_order:
+
+        valores_permitidos = categories.get(
+            feature,
+            [],
+        )
+
+        if valores_permitidos:
+            ejemplo[feature] = valores_permitidos[0]
+        else:
+            ejemplo[feature] = ""
+
+    return pd.DataFrame(
+        [ejemplo],
+        columns=feature_order,
+    )
+
+
 if len(feature_order) != schema["number_of_features"]:
     st.error(
         "El número de variables declarado por la API "
