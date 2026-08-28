@@ -1248,6 +1248,14 @@ if archivo_csv is not None:
                                 "probabilidad_estimada", None
                             ),
                             "umbral": resultado.get("umbral", None),
+                           
+                            "factores": " | ".join(factor.get("mensaje", "")
+                               for factor in resultado.get("factores", [])
+                            ),
+        
+                            "factores_favorables": " | ".join(factor.get("mensaje", "")
+                               for factor in resultado.get("factores_favorables", [])
+                            ),
                             "estado": "OK",
                             "error": "",
                         }
