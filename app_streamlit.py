@@ -9,7 +9,7 @@ import streamlit as st
 
 from datetime import datetime
 from io import BytesIO
-
+import pandas as pd
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import (
@@ -947,7 +947,103 @@ categorical_features = set(
 )
 categories = schema["categories"]
 
+# ------------------------------------------------------------------
+# Validación de archivos CSV
+# ------------------------------------------------------------------
 
+def validar_csv(
+    df: pd.DataFrame,
+    feature_order: list[str],
+    categories: dict,
+) -> tuple[bool, list[str]]:
+    """
+    Valida la estructura y los valores de un archivo CSV
+    contra el esquema entregado por la API.
+
+    Devuelve:
+    - True si el archivo es válido.
+    - False si contiene errores.
+    - Una lista con los errores encontrados.
+    """
+
+    errores = []
+
+    # --------------------------------------------------------------
+    # 1. Verificar columnas faltantes
+    # --------------------------------------------------------------
+
+    columnas_faltantes = [
+        feature
+        for feature in feature_order
+        if feature not in df.columns
+    ]
+
+    if columnas_faltantes:
+        errores.append(
+            "Faltan las siguientes columnas: "
+            + ", ".join(columnas_faltantes)
+        )
+
+    # --------------------------------------------------------------
+    # 2. Verificar columnas adicionales
+    # --------------------------------------------------------------
+
+    columnas_extra = [
+        columna
+        for columna in df.columns
+        if columna not in feature_order
+    ]
+
+    if columnas_extra:
+        errores.append(
+            "Se encontraron columnas no reconocidas: "
+            + ", ".join(columnas_extra)
+        )
+
+    # Si la estructura de columnas es incorrecta,
+    # no continuamos con la validación de valores.
+    if errores:
+        return False, errores
+
+    # --------------------------------------------------------------
+    # 3. Verificar valores permitidos
+    # --------------------------------------------------------------
+
+    for feature in feature_order:
+
+        valores_permitidos = categories.get(
+            feature,
+            [],
+        )
+
+        if not valores_permitidos:
+            continue
+
+        valores_columna = (
+            df[feature]
+            .astype(str)
+            .str.strip()
+        )
+
+        valores_invalidos = sorted(
+            set(valores_columna)
+            - set(
+                str(valor)
+                for valor in valores_permitidos
+            )
+        )
+
+        if valores_invalidos:
+
+            errores.append(
+                f"Valores inválidos en '{feature}': "
+                + ", ".join(valores_invalidos)
+            )
+
+    return (
+        len(errores) == 0,
+        errores,
+    )
 if len(feature_order) != schema["number_of_features"]:
     st.error(
         "El número de variables declarado por la API "
