@@ -1203,6 +1203,102 @@ else:
         use_container_width=True,
     )
 
+    # --------------------------------------------------------------
+    # Procesamiento masivo
+    # --------------------------------------------------------------
+
+    if st.button(
+        "🚀 Procesar estudiantes",
+        type="primary",
+        use_container_width=True,
+    ):
+
+        resultados = []
+
+        progreso = st.progress(
+            0,
+            text="Procesando estudiantes..."
+        )
+
+        total_registros = len(df_masivo)
+
+        for numero_fila, (_, fila) in enumerate(
+            df_masivo.iterrows(),
+            start=1,
+        ):
+
+            payload_masivo = {
+                feature: fila[feature]
+                for feature in feature_order
+            }
+
+            try:
+
+                response = requests.post(
+                    f"{API_URL}/predict",
+                    json=payload_masivo,
+                    timeout=60,
+                )
+
+                response.raise_for_status()
+
+                resultado = response.json()
+
+                resultados.append(
+                    {
+                        "fila": numero_fila,
+                        "resultado": resultado.get(
+                            "resultado",
+                            "No disponible",
+                        ),
+                        "riesgo": resultado.get(
+                            "riesgo",
+                            None,
+                        ),
+                        "probabilidad_estimada": resultado.get(
+                            "probabilidad_estimada",
+                            None,
+                        ),
+                        "umbral": resultado.get(
+                            "umbral",
+                            None,
+                        ),
+                        "estado": "OK",
+                        "error": "",
+                    }
+                )
+
+            except requests.RequestException as exc:
+
+                resultados.append(
+                    {
+                        "fila": numero_fila,
+                        "resultado": "No procesado",
+                        "riesgo": None,
+                        "probabilidad_estimada": None,
+                        "umbral": None,
+                        "estado": "ERROR",
+                        "error": str(exc),
+                    }
+                )
+
+            progreso.progress(
+                numero_fila / total_registros,
+                text=(
+                    f"Procesando estudiante "
+                    f"{numero_fila} de {total_registros}"
+                ),
+            )
+
+        progreso.empty()
+
+        st.session_state[
+            "resultados_masivos"
+        ] = pd.DataFrame(resultados)
+
+        st.success(
+            "Procesamiento masivo finalizado."
+        )
 
 # ------------------------------------------------------------------
 # Orden visual de las secciones
