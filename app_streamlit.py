@@ -1223,7 +1223,7 @@ if archivo_csv is not None:
             ):
 
                 payload_masivo = {
-                    feature: fila[feature]
+                    feature: str(fila[feature]).strip()
                     for feature in feature_order
                 }
 
