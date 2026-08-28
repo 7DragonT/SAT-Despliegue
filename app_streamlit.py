@@ -1125,6 +1125,64 @@ st.download_button(
 )
 
 # ------------------------------------------------------------------
+# Carga del archivo CSV
+# ------------------------------------------------------------------
+
+archivo_csv = st.file_uploader(
+    "📤 Cargar archivo CSV de estudiantes",
+    type=["csv"],
+    help=(
+        "Utilice la plantilla descargada anteriormente "
+        "para garantizar que las columnas y categorías "
+        "sean compatibles con el modelo."
+    ),
+)
+
+if archivo_csv is not None:
+
+    try:
+        df_masivo = pd.read_csv(
+            archivo_csv,
+            encoding="utf-8-sig",
+        )
+
+    except UnicodeDecodeError:
+
+        try:
+            df_masivo = pd.read_csv(
+                archivo_csv,
+                encoding="utf-8",
+            )
+
+        except Exception as exc:
+            st.error(
+                "No fue posible leer el archivo CSV."
+            )
+            st.code(str(exc))
+            st.stop()
+
+    except Exception as exc:
+
+        st.error(
+            "No fue posible leer el archivo CSV."
+        )
+        st.code(str(exc))
+        st.stop()
+
+    st.success(
+        f"Archivo cargado correctamente: "
+        f"{len(df_masivo)} registros."
+    )
+
+    st.write("Vista previa:")
+
+    st.dataframe(
+        df_masivo.head(10),
+        use_container_width=True,
+    )
+
+
+# ------------------------------------------------------------------
 # Orden visual de las secciones
 # ------------------------------------------------------------------
 
