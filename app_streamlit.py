@@ -1169,9 +1169,31 @@ if archivo_csv is not None:
         st.code(str(exc))
         st.stop()
 
+# ------------------------------------------------------------------
+# Validación del archivo cargado
+# ------------------------------------------------------------------
+
+csv_valido, errores_csv = validar_csv(
+    df=df_masivo,
+    feature_order=feature_order,
+    categories=categories,
+)
+
+if not csv_valido:
+
+    st.error(
+        "El archivo CSV no cumple con el esquema "
+        "de entrada requerido por el modelo."
+    )
+
+    for error in errores_csv:
+        st.write(f"• {error}")
+
+else:
+
     st.success(
-        f"Archivo cargado correctamente: "
-        f"{len(df_masivo)} registros."
+        f"Archivo válido: {len(df_masivo)} registros "
+        "listos para procesar."
     )
 
     st.write("Vista previa:")
