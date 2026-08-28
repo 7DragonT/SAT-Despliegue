@@ -1300,6 +1300,7 @@ else:
             "Procesamiento masivo finalizado."
         )
 
+
 # ------------------------------------------------------------------
 # Mostrar resultados de la carga masiva
 # ------------------------------------------------------------------
@@ -1321,6 +1322,22 @@ if "resultados_masivos" in st.session_state:
         use_container_width=True,
     )
 
+    # --------------------------------------------------------------
+    # Descargar resultados
+    # --------------------------------------------------------------
+
+    resultados_csv = resultados_masivos.to_csv(
+        index=False,
+        encoding="utf-8-sig",
+    )
+
+    st.download_button(
+        label="📥 Descargar resultados CSV",
+        data=resultados_csv,
+        file_name="resultados_SAT.csv",
+        mime="text/csv",
+        use_container_width=True,
+    )
 # ------------------------------------------------------------------
 # Orden visual de las secciones
 # ------------------------------------------------------------------
