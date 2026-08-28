@@ -1155,151 +1155,132 @@ if archivo_csv is not None:
             )
 
         except Exception as exc:
-            st.error(
-                "No fue posible leer el archivo CSV."
-            )
+            st.error("No fue posible leer el archivo CSV.")
             st.code(str(exc))
             st.stop()
 
     except Exception as exc:
-
-        st.error(
-            "No fue posible leer el archivo CSV."
-        )
+        st.error("No fue posible leer el archivo CSV.")
         st.code(str(exc))
         st.stop()
 
-# ------------------------------------------------------------------
-# Validación del archivo cargado
-# ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # Validación del archivo cargado
+    # ------------------------------------------------------------------
 
-csv_valido, errores_csv = validar_csv(
-    df=df_masivo,
-    feature_order=feature_order,
-    categories=categories,
-)
-
-if not csv_valido:
-
-    st.error(
-        "El archivo CSV no cumple con el esquema "
-        "de entrada requerido por el modelo."
+    csv_valido, errores_csv = validar_csv(
+        df=df_masivo,
+        feature_order=feature_order,
+        categories=categories,
     )
 
-    for error in errores_csv:
-        st.write(f"• {error}")
+    if not csv_valido:
 
-else:
-
-    st.success(
-        f"Archivo válido: {len(df_masivo)} registros "
-        "listos para procesar."
-    )
-
-    st.write("Vista previa:")
-
-    st.dataframe(
-        df_masivo.head(10),
-        use_container_width=True,
-    )
-
-    # --------------------------------------------------------------
-    # Procesamiento masivo
-    # --------------------------------------------------------------
-
-    if st.button(
-        "🚀 Procesar estudiantes",
-        type="primary",
-        use_container_width=True,
-    ):
-
-        resultados = []
-
-        progreso = st.progress(
-            0,
-            text="Procesando estudiantes..."
+        st.error(
+            "El archivo CSV no cumple con el esquema "
+            "de entrada requerido por el modelo."
         )
 
-        total_registros = len(df_masivo)
+        for error in errores_csv:
+            st.write(f"• {error}")
 
-        for numero_fila, (_, fila) in enumerate(
-            df_masivo.iterrows(),
-            start=1,
-        ):
-
-            payload_masivo = {
-                feature: fila[feature]
-                for feature in feature_order
-            }
-
-            try:
-
-                response = requests.post(
-                    f"{API_URL}/predict",
-                    json=payload_masivo,
-                    timeout=60,
-                )
-
-                response.raise_for_status()
-
-                resultado = response.json()
-
-                resultados.append(
-                    {
-                        "fila": numero_fila,
-                        "resultado": resultado.get(
-                            "resultado",
-                            "No disponible",
-                        ),
-                        "riesgo": resultado.get(
-                            "riesgo",
-                            None,
-                        ),
-                        "probabilidad_estimada": resultado.get(
-                            "probabilidad_estimada",
-                            None,
-                        ),
-                        "umbral": resultado.get(
-                            "umbral",
-                            None,
-                        ),
-                        "estado": "OK",
-                        "error": "",
-                    }
-                )
-
-            except requests.RequestException as exc:
-
-                resultados.append(
-                    {
-                        "fila": numero_fila,
-                        "resultado": "No procesado",
-                        "riesgo": None,
-                        "probabilidad_estimada": None,
-                        "umbral": None,
-                        "estado": "ERROR",
-                        "error": str(exc),
-                    }
-                )
-
-            progreso.progress(
-                numero_fila / total_registros,
-                text=(
-                    f"Procesando estudiante "
-                    f"{numero_fila} de {total_registros}"
-                ),
-            )
-
-        progreso.empty()
-
-        st.session_state[
-            "resultados_masivos"
-        ] = pd.DataFrame(resultados)
+    else:
 
         st.success(
-            "Procesamiento masivo finalizado."
+            f"Archivo válido: {len(df_masivo)} registros "
+            "listos para procesar."
         )
 
+        st.write("Vista previa:")
+
+        st.dataframe(
+            df_masivo.head(10),
+            use_container_width=True,
+        )
+
+        # --------------------------------------------------------------
+        # Procesamiento masivo
+        # --------------------------------------------------------------
+
+        if st.button(
+            "🚀 Procesar estudiantes",
+            type="primary",
+            use_container_width=True,
+        ):
+
+            resultados = []
+
+            progreso = st.progress(
+                0,
+                text="Procesando estudiantes..."
+            )
+
+            total_registros = len(df_masivo)
+
+            for numero_fila, (_, fila) in enumerate(
+                df_masivo.iterrows(),
+                start=1,
+            ):
+
+                payload_masivo = {
+                    feature: fila[feature]
+                    for feature in feature_order
+                }
+
+                try:
+                    response = requests.post(
+                        f"{API_URL}/predict",
+                        json=payload_masivo,
+                        timeout=60,
+                    )
+
+                    response.raise_for_status()
+                    resultado = response.json()
+
+                    resultados.append(
+                        {
+                            "fila": numero_fila,
+                            "resultado": resultado.get(
+                                "resultado", "No disponible"
+                            ),
+                            "riesgo": resultado.get("riesgo", None),
+                            "probabilidad_estimada": resultado.get(
+                                "probabilidad_estimada", None
+                            ),
+                            "umbral": resultado.get("umbral", None),
+                            "estado": "OK",
+                            "error": "",
+                        }
+                    )
+
+                except requests.RequestException as exc:
+                    resultados.append(
+                        {
+                            "fila": numero_fila,
+                            "resultado": "No procesado",
+                            "riesgo": None,
+                            "probabilidad_estimada": None,
+                            "umbral": None,
+                            "estado": "ERROR",
+                            "error": str(exc),
+                        }
+                    )
+
+                progreso.progress(
+                    numero_fila / total_registros,
+                    text=(
+                        f"Procesando estudiante "
+                        f"{numero_fila} de {total_registros}"
+                    ),
+                )
+
+            progreso.empty()
+
+            st.session_state["resultados_masivos"] = pd.DataFrame(
+                resultados
+            )
+
+            st.success("Procesamiento masivo finalizado.")
 
 # ------------------------------------------------------------------
 # Mostrar resultados de la carga masiva
@@ -1307,15 +1288,11 @@ else:
 
 if "resultados_masivos" in st.session_state:
 
-    resultados_masivos = st.session_state[
-        "resultados_masivos"
-    ]
+    resultados_masivos = st.session_state["resultados_masivos"]
 
     st.divider()
 
-    st.subheader(
-        "Resultados de la carga masiva"
-    )
+    st.subheader("Resultados de la carga masiva")
 
     st.dataframe(
         resultados_masivos,
