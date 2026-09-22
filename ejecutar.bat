@@ -1,6 +1,8 @@
 @echo off
 setlocal
 
+cd /d "%~dp0"
+
 echo ==========================================
 echo Sistema de Alerta Temprana - SAT
 echo ==========================================
