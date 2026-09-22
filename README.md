@@ -56,10 +56,11 @@ Ante cualquier resultado, la decisión y las acciones de acompañamiento corresp
 Para ejecutar la aplicación en el pc de la institución:
 
 1. Descargue el repositorio del proyecto.
-2. Ubique el archivo ejecutar.bat.
-3. Haga doble clic sobre ejecutar.bat.
-4. El sistema creará automáticamente el entorno necesario e instalará las dependencias.
-5. Cuando se solicite, ingrese la contraseña que desea utilizar para el acceso.
-6. La aplicación se abrirá automáticamente en el navegador.
+2. Extraer o descomprimir la carpeta.
+3. Ubique el archivo ejecutar.bat o ejecutar.
+4. Haga doble clic sobre ejecutar.bat.
+5. El sistema creará automáticamente el entorno necesario e instalará las dependencias.
+6. Cuando se solicite, ingrese la contraseña que desea utilizar para el acceso.
+7. La aplicación se abrirá automáticamente en el navegador.
 
 Se recomienda contar con una instalación de Python en el equipo para realizar la ejecución local.
