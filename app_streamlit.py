@@ -785,72 +785,6 @@ for field_name, field_config in FIELD_CONFIG.items():
 
 
 # ------------------------------------------------------------------
-# Control de acceso
-# ------------------------------------------------------------------
-
-def verificar_acceso() -> None:
-    """
-    Solicita y valida la contraseña antes de permitir
-    el acceso al Sistema de Alerta Temprana.
-
-    La contraseña correcta se obtiene desde la variable
-    de entorno APP_PASSWORD.
-    """
-
-    password_correcta = os.getenv("APP_PASSWORD")
-
-    if not password_correcta:
-        st.error(
-            "No se configuró la contraseña de acceso "
-            "al sistema."
-        )
-        st.stop()
-
-    # Si el usuario ya se autenticó durante esta sesión,
-    # no se vuelve a solicitar la contraseña.
-    if st.session_state.get("autenticado", False):
-        return
-
-    st.title("Sistema de Alerta Temprana")
-    st.caption("Acceso restringido.")
-
-    password_ingresada = st.text_input(
-        "Contraseña",
-        type="password",
-        key="password_acceso",
-    )
-
-    if st.button(
-        "Ingresar",
-        type="primary",
-    ):
-        hash_ingresado = hashlib.sha256(
-            password_ingresada.encode("utf-8")
-        ).hexdigest()
-
-        hash_correcto = hashlib.sha256(
-            password_correcta.encode("utf-8")
-        ).hexdigest()
-
-        acceso_valido = hmac.compare_digest(
-            hash_ingresado,
-            hash_correcto,
-        )
-
-        if acceso_valido:
-            st.session_state["autenticado"] = True
-            st.rerun()
-
-        st.error("Contraseña incorrecta.")
-
-    # Impide que se ejecute el resto de la aplicación
-    # mientras el usuario no esté autenticado.
-    st.stop()
-
-
-verificar_acceso()
-
-# ------------------------------------------------------------------
 # Encabezado de la aplicación
 # ------------------------------------------------------------------
 
@@ -866,7 +800,7 @@ st.caption(
 # Consulta del esquema de entrada
 # ------------------------------------------------------------------
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=3000)
 def cargar_esquema() -> dict:
     """
     Consulta desde FastAPI las variables requeridas,
