@@ -33,7 +33,7 @@ timeout /t 3 /nobreak >nul
 echo.
 echo Iniciando aplicacion Streamlit...
 set API_URL=http://127.0.0.1:8000
-set /p APP_PASSWORD=Ingrese la contraseña del SAT: 
+
 
 streamlit run app_streamlit.py
 
