@@ -805,16 +805,62 @@ def cargar_esquema() -> dict:
     """
     Consulta desde FastAPI las variables requeridas,
     su orden y las categorías permitidas por el modelo.
+
+    Se realizan hasta 3 intentos para tolerar errores
+    temporales de infraestructura durante el despertar
+    del servicio en Render.
     """
 
-    response = requests.get(
-        f"{API_URL}/schema",
-        timeout=30,
-    )
+    ultimo_error = None
 
-    response.raise_for_status()
+    for intento in range(3):
 
-    return response.json()
+        try:
+
+            response = requests.get(
+                f"{API_URL}/schema",
+                timeout=60,
+            )
+
+            # ------------------------------------------------------
+            # Un 429 puede ser temporal. Esperamos y reintentamos.
+            # ------------------------------------------------------
+
+            if response.status_code == 429:
+
+                if intento < 2:
+
+                    import time
+
+                    tiempo_espera = 2 ** intento
+
+                    time.sleep(
+                        tiempo_espera
+                    )
+
+                    continue
+
+            response.raise_for_status()
+
+            return response.json()
+
+        except requests.RequestException as exc:
+
+            ultimo_error = exc
+
+            if intento < 2:
+
+                import time
+
+                tiempo_espera = 2 ** intento
+
+                time.sleep(
+                    tiempo_espera
+                )
+
+                continue
+
+    raise ultimo_error
 
 
 try:
