@@ -36,6 +36,58 @@ st.set_page_config(
     layout="centered",
 )
 
+
+# Imports adicionales al inicio del archivo.
+import time
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
+
+# ------------------------------------------------------------------
+# Activación temprana de FastAPI
+# ------------------------------------------------------------------
+
+# Reutilizar un ejecutor evita crear nuevos hilos en cada rerun.
+@st.cache_resource
+def obtener_ejecutor_health():
+    """Crea un único ejecutor para comprobar la salud del backend."""
+    return ThreadPoolExecutor(max_workers=1)
+
+
+def despertar_fastapi() -> bool:
+    """
+    Comprueba si FastAPI está disponible.
+    Reintenta con pausas crecientes para permitir el arranque
+    del servicio en Render sin generar solicitudes ilimitadas.
+    """
+    esperas = [0, 3, 6, 10]
+
+    for espera in esperas:
+        if espera:
+            time.sleep(espera)
+
+        try:
+            respuesta = requests.get(
+                f"{API_URL}/health",
+                timeout=(3, 5),
+            )
+
+            if respuesta.status_code == 200:
+                return True
+
+        except requests.RequestException:
+            # El servicio podría seguir iniciándose.
+            pass
+
+    return False
+
+
+# Iniciar la comprobación cuanto antes, en segundo plano.
+# Se conserva la tarea durante los reruns de esta sesión.
+if "sat_health_future" not in st.session_state:
+    ejecutor = obtener_ejecutor_health()
+    st.session_state["sat_health_future"] = ejecutor.submit(
+        despertar_fastapi
+    )
+
 #Generar informe PDF
 def generar_informe_pdf(
     result: dict,
@@ -799,6 +851,45 @@ st.caption(
 # ------------------------------------------------------------------
 # Consulta del esquema de entrada
 # ------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------
+# Esperar la activación inicial del backend antes de consultar /schema
+# ------------------------------------------------------------------
+
+health_future = st.session_state["sat_health_future"]
+
+try:
+    with st.spinner(
+        "Conectando con el servicio de predicción..."
+    ):
+        # La llamada a /health ya se inició en segundo plano.
+        # Aquí esperamos el resultado antes de solicitar /schema.
+        backend_disponible = health_future.result(timeout=60)
+
+except FutureTimeoutError:
+    st.error(
+        "FastAPI está tardando demasiado en iniciar. "
+        "Espera un momento y vuelve a cargar la aplicación."
+    )
+    st.stop()
+
+if not backend_disponible:
+    st.error(
+        "No fue posible activar FastAPI. "
+        "No se consultará /schema hasta restablecer la conexión."
+    )
+
+    if st.button("Reintentar conexión"):
+        # Crear una nueva comprobación solo por acción del usuario.
+        ejecutor = obtener_ejecutor_health()
+        st.session_state["sat_health_future"] = ejecutor.submit(
+            despertar_fastapi
+        )
+        st.rerun()
+
+    st.stop()
+
 
 @st.cache_data(ttl=3000)
 def cargar_esquema() -> dict:
