@@ -69,7 +69,7 @@ def despertar_fastapi() -> bool:
 
     url_health = f"{API_URL}/health"
 
-    print(f"[SAT-HEALTH] Iniciando solicitud: {url_health}")
+    print(f"[SAT-HEALTH] Iniciando solicitud: {url_health}", flush=True)
 
     while time.monotonic() - inicio < tiempo_maximo:
         try:
@@ -80,20 +80,20 @@ def despertar_fastapi() -> bool:
 
             print(
                 f"[SAT-HEALTH] Código HTTP recibido: "
-                f"{respuesta.status_code}"
+                f"{respuesta.status_code}", flush=True
             )
 
             if respuesta.status_code == 200:
                 print(
                     "[SAT-HEALTH] Conexión exitosa. "
-                    "FastAPI está disponible."
+                    "FastAPI está disponible.", flush=True
                 )
                 return True
 
         except requests.RequestException as exc:
             print(
                 f"[SAT-HEALTH] Error de conexión: "
-                f"{type(exc).__name__}: {exc}"
+                f"{type(exc).__name__}: {exc}", flush=True
             )
 
         tiempo_transcurrido = time.monotonic() - inicio
@@ -104,133 +104,19 @@ def despertar_fastapi() -> bool:
 
     print(
         "[SAT-HEALTH] Tiempo máximo agotado. "
-        "No se confirmó la disponibilidad de FastAPI."
+        "No se confirmó la disponibilidad de FastAPI.", flush=True
     )
 
     return False
 
 
-from __future__ import annotations
-
-import hashlib
-import hmac
-import os
-
-import requests
-import streamlit as st
-
-from datetime import datetime
-from io import BytesIO
-import pandas as pd
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import (
-    Paragraph,
-    SimpleDocTemplate,
-    Spacer,
-)
-
-# ------------------------------------------------------------------
-# Configuración general
-# ------------------------------------------------------------------
-
-# En Render, API_URL se obtiene desde una variable de entorno.
-# En ejecución local, se utiliza FastAPI en el puerto 8000.
-API_URL = os.getenv(
-    "API_URL",
-    "http://127.0.0.1:8000",
-).rstrip("/")
-
-
-st.set_page_config(
-    page_title="Sistema de Alerta Temprana",
-    page_icon="📘",
-    layout="centered",
-)
-
-
-# Imports adicionales al inicio del archivo.
-import time
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
-
-# ------------------------------------------------------------------
-# Activación temprana de FastAPI
-# ------------------------------------------------------------------
-
-# Reutilizar un ejecutor evita crear nuevos hilos en cada rerun.
-@st.cache_resource
-def obtener_ejecutor_health():
-    """Crea un único ejecutor para comprobar la salud del backend."""
-    return ThreadPoolExecutor(max_workers=1)
-
-
-
-def despertar_fastapi() -> bool:
-    """
-    Intenta activar FastAPI mediante /health.
-
-    Repite la solicitud hasta recibir HTTP 200 o alcanzar
-    un máximo aproximado de 180 segundos.
-
-    Registra los intentos para facilitar el diagnóstico
-    desde los logs de Streamlit en Render.
-    """
-    tiempo_maximo = 180
-    intervalo = 5
-    inicio = time.monotonic()
-
-    url_health = f"{API_URL}/health"
-
-    print(f"[SAT-HEALTH] Iniciando solicitud: {url_health}")
-
-    while time.monotonic() - inicio < tiempo_maximo:
-        try:
-            respuesta = requests.get(
-                url_health,
-                timeout=(10, 15),
-            )
-
-            print(
-                f"[SAT-HEALTH] Código HTTP recibido: "
-                f"{respuesta.status_code}"
-            )
-
-            if respuesta.status_code == 200:
-                print(
-                    "[SAT-HEALTH] Conexión exitosa. "
-                    "FastAPI está disponible."
-                )
-                return True
-
-        except requests.RequestException as exc:
-            print(
-                f"[SAT-HEALTH] Error de conexión: "
-                f"{type(exc).__name__}: {exc}"
-            )
-
-        tiempo_transcurrido = time.monotonic() - inicio
-        tiempo_restante = tiempo_maximo - tiempo_transcurrido
-
-        if tiempo_restante > 0:
-            time.sleep(min(intervalo, tiempo_restante))
-
-    print(
-        "[SAT-HEALTH] Tiempo máximo agotado. "
-        "No se confirmó la disponibilidad de FastAPI."
-    )
-
-    return False
-
-
-
-# ------------------------------------------------------------------
 # Inicio y diagnóstico de la conexión automática con FastAPI
 # ------------------------------------------------------------------
 
-print("[SAT-HEALTH] La aplicación llegó al bloque de inicio.")
+print("[SAT-HEALTH] La aplicación llegó al bloque de inicio.", flush=True)
 
 if "sat_health_future" not in st.session_state:
-    print("[SAT-HEALTH] No existe una tarea previa. Iniciando conexión.")
+    print("[SAT-HEALTH] No existe una tarea previa. Iniciando conexión.", flush=True)
 
     ejecutor = obtener_ejecutor_health()
 
@@ -238,7 +124,7 @@ if "sat_health_future" not in st.session_state:
         despertar_fastapi
     )
 
-    print("[SAT-HEALTH] Tarea enviada al ejecutor.")
+    print("[SAT-HEALTH] Tarea enviada al ejecutor.", flush=True)
 
 else:
     tarea = st.session_state["sat_health_future"]
@@ -1026,7 +912,7 @@ try:
     ):
         # La llamada a /health ya se inició en segundo plano.
         # Aquí esperamos el resultado antes de solicitar /schema.
-        backend_disponible = health_future.result(timeout=60)
+        backend_disponible = health_future.result(timeout=190)
 
 except FutureTimeoutError:
     st.error(
