@@ -53,15 +53,20 @@ def obtener_ejecutor_health():
 
 
 
+
 def despertar_fastapi() -> bool:
     """
-    Intenta activar FastAPI mediante /health.
+    Intenta activar FastAPI mediante el endpoint /health.
 
-    Repite la solicitud hasta recibir HTTP 200 o alcanzar
-    un máximo aproximado de 180 segundos.
+    Repite las solicitudes hasta recibir HTTP 200, recibir HTTP 429
+    o alcanzar un máximo aproximado de 180 segundos.
 
-    Registra los intentos para facilitar el diagnóstico
-    desde los logs de Streamlit en Render.
+    Registra códigos HTTP, cabeceras y respuestas para facilitar
+    el diagnóstico desde los logs de Streamlit en Render.
+
+    Retorna:
+        True: FastAPI respondió con HTTP 200.
+        False: se recibió HTTP 429 o no se logró conectar.
     """
     tiempo_maximo = 180
     intervalo = 5
@@ -69,65 +74,88 @@ def despertar_fastapi() -> bool:
 
     url_health = f"{API_URL}/health"
 
-    print(f"[SAT-HEALTH] Iniciando solicitud: {url_health}", flush=True)
+    print(
+        f"[SAT-HEALTH] Iniciando solicitud: {url_health}",
+        flush=True,
+    )
 
     while time.monotonic() - inicio < tiempo_maximo:
         try:
-            respuesta = requests.get(url_health, timeout=(10, 15))
-            
+            # Consultar el endpoint de salud de FastAPI.
+            respuesta = requests.get(
+                url_health,
+                timeout=(10, 15),
+            )
+
+            # Registrar cabeceras que pueden ayudar a identificar
+            # la capa que genera la respuesta HTTP.
+            for nombre in (
+                "Server",
+                "Via",
+                "CF-Ray",
+                "Retry-After",
+                "Content-Type",
+            ):
+                print(
+                    f"[SAT-HEALTH] {nombre}: "
+                    f"{respuesta.headers.get(nombre, 'No informado')}",
+                    flush=True,
+                )
+
             # Registrar el código HTTP recibido.
             print(
                 f"[SAT-HEALTH] Código HTTP: {respuesta.status_code}",
                 flush=True,
             )
-            
-            # Registrar si el servidor indica cuánto esperar antes de reintentar.
-            print(
-                f"[SAT-HEALTH] Retry-After: "
-                f"{respuesta.headers.get('Retry-After', 'No informado')}",
-                flush=True,
-            )
-            
-            # Mostrar una muestra del cuerpo para identificar quién responde.
+
+            # Mostrar una muestra del cuerpo de la respuesta.
             print(
                 f"[SAT-HEALTH] Respuesta: {respuesta.text[:500]!r}",
                 flush=True,
             )
-            
+
+            # Finalizar si FastAPI está disponible.
             if respuesta.status_code == 200:
                 print(
-                    "[SAT-HEALTH] FastAPI está disponible.",
+                    "[SAT-HEALTH] Conexión exitosa. "
+                    "FastAPI está disponible.",
                     flush=True,
                 )
                 return True
-            
-            # No repetir solicitudes cada cinco segundos cuando hay un 429.
+
+            # No insistir si el servidor limita las solicitudes.
             if respuesta.status_code == 429:
                 print(
-                    "[SAT-HEALTH] Se recibió 429. "
-                    "Se detiene el diagnóstico para evitar más solicitudes.",
+                    "[SAT-HEALTH] Se recibió HTTP 429. "
+                    "Se detienen los reintentos para evitar "
+                    "generar más solicitudes.",
                     flush=True,
                 )
                 return False
+
         except requests.RequestException as exc:
+            # Registrar errores de conexión y tiempos de espera.
             print(
                 f"[SAT-HEALTH] Error de conexión: "
-                f"{type(exc).__name__}: {exc}", flush=True
+                f"{type(exc).__name__}: {exc}",
+                flush=True,
             )
 
+        # Calcular cuánto tiempo queda para el siguiente intento.
         tiempo_transcurrido = time.monotonic() - inicio
         tiempo_restante = tiempo_maximo - tiempo_transcurrido
 
+        # Esperar antes de reintentar, sin superar el tiempo máximo.
         if tiempo_restante > 0:
             time.sleep(min(intervalo, tiempo_restante))
 
     print(
         "[SAT-HEALTH] Tiempo máximo agotado. "
-        "No se confirmó la disponibilidad de FastAPI.", flush=True
+        "No se confirmó la disponibilidad de FastAPI.",
+        flush=True,
     )
 
     return False
-
 
 # Inicio y diagnóstico de la conexión automática con FastAPI
 # ------------------------------------------------------------------
