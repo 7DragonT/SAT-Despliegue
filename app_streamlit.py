@@ -73,23 +73,42 @@ def despertar_fastapi() -> bool:
 
     while time.monotonic() - inicio < tiempo_maximo:
         try:
-            respuesta = requests.get(
-                url_health,
-                timeout=(10, 15),
-            )
-
+            respuesta = requests.get(url_health, timeout=(10, 15))
+            
+            # Registrar el código HTTP recibido.
             print(
-                f"[SAT-HEALTH] Código HTTP recibido: "
-                f"{respuesta.status_code}", flush=True
+                f"[SAT-HEALTH] Código HTTP: {respuesta.status_code}",
+                flush=True,
             )
-
+            
+            # Registrar si el servidor indica cuánto esperar antes de reintentar.
+            print(
+                f"[SAT-HEALTH] Retry-After: "
+                f"{respuesta.headers.get('Retry-After', 'No informado')}",
+                flush=True,
+            )
+            
+            # Mostrar una muestra del cuerpo para identificar quién responde.
+            print(
+                f"[SAT-HEALTH] Respuesta: {respuesta.text[:500]!r}",
+                flush=True,
+            )
+            
             if respuesta.status_code == 200:
                 print(
-                    "[SAT-HEALTH] Conexión exitosa. "
-                    "FastAPI está disponible.", flush=True
+                    "[SAT-HEALTH] FastAPI está disponible.",
+                    flush=True,
                 )
                 return True
-
+            
+            # No repetir solicitudes cada cinco segundos cuando hay un 429.
+            if respuesta.status_code == 429:
+                print(
+                    "[SAT-HEALTH] Se recibió 429. "
+                    "Se detiene el diagnóstico para evitar más solicitudes.",
+                    flush=True,
+                )
+                return False
         except requests.RequestException as exc:
             print(
                 f"[SAT-HEALTH] Error de conexión: "
